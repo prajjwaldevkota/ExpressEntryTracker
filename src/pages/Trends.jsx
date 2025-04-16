@@ -24,8 +24,8 @@ ChartJS.register(
 );
 
 // const BASE_URL = "http://localhost:3000/api";
-// const BASE_URL = "/api";
-const PROXY_URL = "/.netlify/functions/proxy";
+const BASE_URL = "/api";
+// const PROXY_URL = "/.netlify/functions/proxy";
 
 // Preset color palette for datasets.
 const colors = [
@@ -44,12 +44,12 @@ export default function Trends() {
   // Fetch draws and categories on mount
   useEffect(() => {
     axios
-      .get(`${PROXY_URL}/draws`)
+      .get(`${BASE_URL}/draws`)
       .then((res) => setDraws(res.data.draws))
       .catch((err) => console.error("Error fetching draws:", err));
 
     axios
-      .get(`${PROXY_URL}/categories`)
+      .get(`${BASE_URL}/categories`)
       .then((res) => setCategories(res.data.categories))
       .catch((err) => console.error("Error fetching categories:", err));
   }, []);

@@ -3,7 +3,8 @@ import axios from "axios";
 import { FaSortAmountDown, FaSortAmountUp } from "react-icons/fa";
 
 // Using the Netlify Function proxy endpoint
-const PROXY_URL = "/.netlify/functions/proxy";
+// const PROXY_URL = "/.netlify/functions/proxy";
+const BASE_URL = "/api"
 
 export default function History() {
   const [draws, setDraws] = useState([]);
@@ -15,7 +16,7 @@ export default function History() {
   // Fetch available categories for the filter.
   useEffect(() => {
     axios
-      .get(`${PROXY_URL}/categories`)
+      .get(`${BASE_URL}/categories`)
       .then((res) => setCategories(res.data.categories))
       .catch((err) => console.error("Error fetching categories:", err));
   }, []);
@@ -23,7 +24,7 @@ export default function History() {
   // Fetch draws based on filters.
   useEffect(() => {
     axios
-      .get(`${PROXY_URL}/draws`, {
+      .get(`${BASE_URL}/draws`, {
         params: { year: year || undefined, category: category || undefined },
       })
       .then((res) => setDraws(res.data.draws))

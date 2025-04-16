@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 // const BASE_URL = "https://can-ee-draws.onrender.com/api";
-const PROXY_URL = "/.netlify/functions/proxy";
+const BASE_URL = "/api"
 
 
 export default function Home() {
@@ -10,7 +10,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`${PROXY_URL}/draws/latest`)
+    axios.get(`${BASE_URL}/draws/latest`)
       .then(({ data }) => {
         setLatestDraw(data.draw);
         setLoading(false);
