@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaSortAmountDown, FaSortAmountUp } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 // Using the Netlify Function proxy endpoint
 // const PROXY_URL = "/.netlify/functions/proxy";
