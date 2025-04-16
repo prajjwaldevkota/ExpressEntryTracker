@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 // Import sort icons from react-icons
 import { FaSortAmountDown, FaSortAmountUp } from "react-icons/fa";
 
-const BASE_URL = "/api";
+const BASE_URL = "https://can-ee-draws.onrender.com/api";
 
 export default function History() {
   const [draws, setDraws] = useState([]);

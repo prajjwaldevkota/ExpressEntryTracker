@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const BASE_URL = "/api";
+const BASE_URL = "https://can-ee-draws.onrender.com/api";
 
 export default function Home() {
   const [latestDraw, setLatestDraw] = useState(null);
