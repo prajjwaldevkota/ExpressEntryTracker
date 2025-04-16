@@ -63,21 +63,21 @@ export default function History() {
               onChange={(e) => setYear(e.target.value)}
               className="w-full md:w-1/2 p-3 rounded-lg border border-white/20 bg-gray-700/70 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
             />
-             {/* Sort Icon Toggle */}
-          <div className="mt-4 flex justify-center">
-            <button
-              onClick={toggleSortOrder}
-              className="flex items-center justify-center p-3 bg-blue-600 rounded-full hover:bg-blue-500 transition-all"
-              title="Toggle sort order"
-            >
-              {sortOrder === "asc" ? (
-                <FaSortAmountUp size={24} className="text-white" />
-              ) : (
-                <FaSortAmountDown size={24} className="text-white" />
-              )}
-              <span className="sr-only">Toggle sort order</span>
-            </button>
-          </div>
+            {/* Sort Icon Toggle */}
+            <div className="flex justify-center items-center">
+              <button
+                onClick={toggleSortOrder}
+                className="flex items-center justify-center p-3 bg-blue-600 rounded-full hover:bg-blue-500 transition-all"
+                title="Toggle sort order"
+              >
+                {sortOrder === "asc" ? (
+                  <FaSortAmountUp size={24} className="text-white" />
+                ) : (
+                  <FaSortAmountDown size={24} className="text-white" />
+                )}
+                <span className="sr-only">Toggle sort order</span>
+              </button>
+            </div>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
@@ -85,13 +85,16 @@ export default function History() {
             >
               <option value="">All Categories</option>
               {categories.map((cat) => (
-                <option key={cat} value={cat} className="bg-gray-700 text-white">
+                <option
+                  key={cat}
+                  value={cat}
+                  className="bg-gray-700 text-white"
+                >
                   {cat}
                 </option>
               ))}
             </select>
           </div>
-         
         </div>
       </div>
 
@@ -124,7 +127,7 @@ export default function History() {
                 <strong>Invitations Issued:</strong> {draw.invitationsIssued}
               </p>
               <p className="text-gray-300 mb-2">
-                <strong>Category:</strong> {draw.category}
+                <strong>Category:</strong> {draw.category || "N/A"}
               </p>
               <p className="text-gray-300">
                 <strong>Year:</strong> {draw.year}
