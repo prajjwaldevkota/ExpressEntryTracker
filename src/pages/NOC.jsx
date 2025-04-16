@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_BASE_URL = "https://e6276813-noc-canada.karanjit-sagun01.workers.dev"; // Replace with the actual base URL of the NOC API
+const API_BASE_URL = "https://e6276813-noc-canada.karanjit-sagun01.workers.dev";
 
 export default function NocSearch() {
   // State variables for search term, NOC data and pagination
