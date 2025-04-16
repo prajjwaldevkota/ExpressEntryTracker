@@ -13,11 +13,19 @@ import {
 } from "chart.js";
 
 // Register Chart.js components
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 // const BASE_URL = "http://localhost:3000/api";
-const BASE_URL = "/api";
-
+// const BASE_URL = "/api";
+const PROXY_URL = "/.netlify/functions/proxy";
 
 // Preset color palette for datasets.
 const colors = [
@@ -36,12 +44,12 @@ export default function Trends() {
   // Fetch draws and categories on mount
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/draws`)
+      .get(`${PROXY_URL}/draws`)
       .then((res) => setDraws(res.data.draws))
       .catch((err) => console.error("Error fetching draws:", err));
 
     axios
-      .get(`${BASE_URL}/categories`)
+      .get(`${PROXY_URL}/categories`)
       .then((res) => setCategories(res.data.categories))
       .catch((err) => console.error("Error fetching categories:", err));
   }, []);
@@ -102,16 +110,22 @@ export default function Trends() {
   const handleCategoryChange = (e) => {
     const value = e.target.value;
     setSelectedCategories((prev) =>
-      prev.includes(value) ? prev.filter((cat) => cat !== value) : [...prev, value]
+      prev.includes(value)
+        ? prev.filter((cat) => cat !== value)
+        : [...prev, value]
     );
   };
 
   return (
     <div className="p-6 bg-gray-900 min-h-screen">
-      <h1 className="text-3xl font-bold mb-4 text-white">Invitations Issued Trends</h1>
+      <h1 className="text-3xl font-bold mb-4 text-white">
+        Invitations Issued Trends
+      </h1>
 
       <div className="mb-6 bg-gray-800/60 backdrop-blur-md border border-white/30 p-4 rounded-xl">
-        <p className="text-white mb-2">Filter by Category (select one or more):</p>
+        <p className="text-white mb-2">
+          Filter by Category (select one or more):
+        </p>
         <div className="flex flex-wrap gap-4">
           {categories.map((cat) => (
             <label key={cat} className="flex items-center text-white">

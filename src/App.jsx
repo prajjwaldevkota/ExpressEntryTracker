@@ -60,7 +60,7 @@ export default function App() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden fixed top-20 left-0 w-full bg-blue-600/90 backdrop-blur-lg shadow-lg">
+        <div className="md:hidden fixed top-20 left-0 w-full bg-blue-600/90 backdrop-blur-lg shadow-lg z-50">
           <div className="flex flex-col items-center space-y-4 p-4">
             <Link
               to="/"

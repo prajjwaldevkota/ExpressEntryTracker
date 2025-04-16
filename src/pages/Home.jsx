@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const BASE_URL = "https://can-ee-draws.onrender.com/api";
+// const BASE_URL = "https://can-ee-draws.onrender.com/api";
+const PROXY_URL = "/.netlify/functions/proxy";
+
 
 export default function Home() {
   const [latestDraw, setLatestDraw] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/draws/latest`)
+    axios.get(`${PROXY_URL}/draws/latest`)
       .then(({ data }) => {
         setLatestDraw(data.draw);
         setLoading(false);
