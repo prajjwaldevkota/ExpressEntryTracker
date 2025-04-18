@@ -13,9 +13,7 @@ export default function Pool() {
     axios
       .get(`${BASE_URL}/pool`)
       .then(({ data }) => {
-        console.log("Pool data:", data);
         setPoolData(data.pool.ranges || []);
-        console.log("Pool ranges:", data.pool.ranges);
         setDrawNumber(data.pool.drawNumber);
         setDrawDate(data.pool.drawDate);
         setLoading(false);
