@@ -52,7 +52,7 @@ export default function Pool() {
               {poolData.map((range) => (
                 <tr key={range.key} className="border-b border-white/10">
                   <td className="py-2 font-bold">{range.range}</td>
-                  <td className="py-2 font-bold">{range.value}</td>
+                  <td className="py-2 font-bold text-right">{range.value}</td>
                 </tr>
               ))}
             </tbody>
