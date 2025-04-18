@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
-// const BASE_URL = "https://can-ee-draws.onrender.com/api";
-const BASE_URL = "/api"
+import { BASE_URL } from "../Utils/utils";
 
 
 export default function Home() {

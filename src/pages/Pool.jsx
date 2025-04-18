@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
-const BASE_URL = "/api";
+import { BASE_URL } from "../Utils/utils";
 
 export default function Pool() {
   const [poolData, setPoolData] = useState([]);
@@ -26,7 +25,7 @@ export default function Pool() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-6">
-      <h1 className="text-3xl sm:text-4xl font-bold text-white text-center mb-6">
+      <h1 className="text-3xl sm:text-2xl font-bold text-white text-center mb-6">
         Express Entry Pool Breakdown
       </h1>
 
@@ -52,8 +51,8 @@ export default function Pool() {
             <tbody>
               {poolData.map((range) => (
                 <tr key={range.key} className="border-b border-white/10">
-                  <td className="py-2">{range.range}</td>
-                  <td className="py-2 text-right">{range.value}</td>
+                  <td className="py-2 font-bold">{range.range}</td>
+                  <td className="py-2 font-bold">{range.value}</td>
                 </tr>
               ))}
             </tbody>

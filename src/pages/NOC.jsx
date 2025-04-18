@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { NOC_URL } from "../Utils/utils";
 
-const API_BASE_URL = "https://e6276813-noc-canada.karanjit-sagun01.workers.dev";
 
 export default function NocSearch() {
   // State variables for search term, NOC data and pagination
@@ -18,7 +18,7 @@ export default function NocSearch() {
     setLoading(true);
     setError("");
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/nocs`, {
+      const response = await axios.get(`${NOC_URL}/api/nocs`, {
         params: {
           search: searchTerm || undefined,
           page: page,
@@ -27,7 +27,7 @@ export default function NocSearch() {
       });
       setNocData(response.data.data);
       setTotalEntries(response.data.pagination.total);
-    //   setTotalEntries(response.);
+      //   setTotalEntries(response.);
     } catch (err) {
       console.error("Error fetching NOC codes:", err);
       setError("Error fetching NOC codes. Please try again later.");

@@ -22,10 +22,7 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-// const BASE_URL = "http://localhost:3000/api";
-const BASE_URL = "/api";
-// const PROXY_URL = "/.netlify/functions/proxy";
+import { BASE_URL } from "../Utils/utils";
 
 // Preset color palette for datasets.
 const colors = [

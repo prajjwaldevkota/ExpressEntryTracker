@@ -2,10 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaSortAmountDown, FaSortAmountUp } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { BASE_URL } from "../Utils/utils";
 
-// Using the Netlify Function proxy endpoint
-// const PROXY_URL = "/.netlify/functions/proxy";
-const BASE_URL = "/api"
 
 export default function History() {
   const [draws, setDraws] = useState([]);
