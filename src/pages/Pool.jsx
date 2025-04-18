@@ -12,10 +12,10 @@ export default function Pool() {
   useEffect(() => {
     axios
       .get(`${BASE_URL}/pool`)
-      .then(({ data }) => {
-        setPoolData(data.ranges || []);
-        setDrawNumber(data.drawNumber);
-        setDrawDate(data.drawDate);
+      .then(({ pool }) => {
+        setPoolData(pool.ranges || []);
+        setDrawNumber(pool.drawNumber);
+        setDrawDate(pool.drawDate);
         setLoading(false);
       })
       .catch((err) => {
