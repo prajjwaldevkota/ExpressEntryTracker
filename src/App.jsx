@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import History from "./pages/History";
 import Trends from "./pages/Trends";
+import Pool from "./pages/Pool";
 import NOC from "./pages/NOC";
 import { FaBars, FaTimes } from "react-icons/fa";
 
@@ -45,6 +46,12 @@ export default function App() {
             className="text-white hover:text-blue-200 transition-colors duration-300"
           >
             NOC
+          </Link>
+          <Link
+            to="/pool"
+            className="text-white hover:text-blue-200 transition-colors duration-300"
+          >
+            Pool
           </Link>
         </div>
         {/* Mobile Hamburger */}
@@ -90,6 +97,13 @@ export default function App() {
             >
               NOC
             </Link>
+            <Link
+              to="/pool"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-white hover:text-blue-200 transition-colors duration-300"
+            >
+              Pool
+            </Link>
           </div>
         </div>
       )}
@@ -100,6 +114,7 @@ export default function App() {
           <Route path="/history" element={<History />} />
           <Route path="/trends" element={<Trends />} />
           <Route path="/noc" element={<NOC />} />
+          <Route path="/pool" element={<Pool />} />
         </Routes>
       </div>
     </Router>
