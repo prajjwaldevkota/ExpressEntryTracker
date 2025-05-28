@@ -176,8 +176,6 @@ export default function Pool() {
               <div className="p-8">
                 <div className="grid gap-4">
                   {poolData.map((range, index) => {
-                    const percentage = (range.value / totalCandidates) * 100;
-                    const barWidth = (range.value / maxValue) * 100;
 
                     return (
                       <motion.div
