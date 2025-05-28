@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { NOC_URL } from "../Utils/utils";
-import { Search, ChevronLeft, ChevronRight, ExternalLink, Briefcase, Layers, Target, Users, TrendingUp } from "lucide-react";
+import {
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+  Briefcase,
+  Layers,
+  Target,
+  Users,
+  TrendingUp,
+} from "lucide-react";
 
 export default function NocSearch() {
   // State variables for search term, NOC data and pagination
@@ -13,34 +23,57 @@ export default function NocSearch() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
   // Function that fetches NOC codes from the API
-  const fetchNocData = async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const response = await axios.get(`${NOC_URL}/api/nocs`, {
-        params: {
-          search: searchTerm || undefined,
-          page: page,
-          limit: limit,
-        },
-      });
-      setNocData(response.data.data);
-      setTotalEntries(response.data.pagination.total);
-      //   setTotalEntries(response.);
-    } catch (err) {
-      console.error("Error fetching NOC codes:", err);
-      setError("Error fetching NOC codes. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Refetch data when search term or page changes.
   useEffect(() => {
+    const controller = new AbortController();
+    
+    const fetchNocData = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const response = await axios.get(`${NOC_URL}/api/nocs`, {
+          params: {
+            search: debouncedSearchTerm || undefined,
+            page: page,
+            limit: limit,
+          },
+          signal: controller.signal
+        });
+        setNocData(response.data.data);
+        setTotalEntries(response.data.pagination.total);
+      } catch (err) {
+        if (!axios.isCancel(err)) {
+          console.error("Error fetching NOC codes:", err);
+          setError(
+            err.response?.status === 404
+              ? "No results found. Please try different search terms."
+              : err.response?.status === 500
+              ? "Server error. Please try again later."
+              : "Error fetching NOC codes. Please check your connection and try again."
+          );
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchNocData();
-  }, [searchTerm, page]);
+    return () => controller.abort();
+  }, [debouncedSearchTerm, page]);
+
+  // Add loading timeout
+  useEffect(() => {
+    let timeoutId;
+    if (loading) {
+      timeoutId = setTimeout(() => {
+        setError("Request timed out. Please try again.");
+        setLoading(false);
+      }, 10000); // 10 second timeout
+    }
+    return () => clearTimeout(timeoutId);
+  }, [loading]);
 
   const totalPages = Math.ceil(totalEntries / limit);
 
@@ -55,6 +88,56 @@ export default function NocSearch() {
     };
     return colors[teer] || "from-gray-800 to-slate-900";
   };
+
+  const getPageNumbers = () => {
+    const total = totalPages;
+    let start = page - 2;
+    let end = page + 2;
+
+    // shift window right if start falls below 1
+    if (start < 1) {
+      end += 1 - start;
+      start = 1;
+    }
+
+    // shift window left if end exceeds total
+    if (end > total) {
+      start -= end - total;
+      end = total;
+    }
+
+    // make sure start never falls below 1
+    if (start < 1) start = 1;
+
+    const pages = [];
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
+
+  // Add keyboard navigation for pagination
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === "ArrowLeft" && page > 1) {
+        setPage((prev) => prev - 1);
+      } else if (e.key === "ArrowRight" && page < totalPages) {
+        setPage((prev) => prev + 1);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [page, totalPages]);
+
+  // Add debouncing for search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300); // 300ms delay
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-gray-900 relative overflow-hidden mt-5">
@@ -106,7 +189,7 @@ export default function NocSearch() {
                   }}
                   onFocus={() => setSearchFocused(true)}
                   onBlur={() => setSearchFocused(false)}
-                  className="w-full pl-14 pr-6 py-4 bg-transparent text-white placeholder-gray-400 text-lg focus:outline-none"
+                  className="w-full pl-12 pr-4 py-3 sm:py-4 bg-transparent text-white placeholder-gray-400 text-base sm:text-lg focus:outline-none"
                 />
               </div>
             </div>
@@ -147,6 +230,19 @@ export default function NocSearch() {
             <p className="text-white text-xl mt-6 animate-pulse">
               Searching occupations...
             </p>
+            {/* Add skeleton cards */}
+            <div className="w-full max-w-6xl mt-8">
+              {[...Array(3)].map((_, index) => (
+                <div
+                  key={index}
+                  className="bg-white/5 backdrop-blur-lg border border-white/20 rounded-2xl p-8 mb-6 animate-pulse"
+                >
+                  <div className="h-8 bg-white/10 rounded-lg w-3/4 mb-4"></div>
+                  <div className="h-4 bg-white/10 rounded-lg w-1/2 mb-2"></div>
+                  <div className="h-4 bg-white/10 rounded-lg w-full"></div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
@@ -192,26 +288,22 @@ export default function NocSearch() {
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-600/20 rounded-2xl blur group-hover:blur-lg transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
                     <div className="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 hover:bg-white/15 transition-all duration-300">
-                      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+                      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 sm:gap-6">
                         <div className="flex-1">
-                          <div className="flex items-center gap-4 mb-4">
+                          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                                <span className="text-white font-bold text-lg">
+                              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                                <span className="text-white font-bold text-base sm:text-lg">
                                   {noc.noc_code.slice(0, 2)}
                                 </span>
                               </div>
                               <div>
-                                <h2 className="text-2xl font-bold text-white group-hover:text-blue-300 transition-colors duration-300">
+                                <h2 className="text-xl sm:text-2xl font-bold text-white group-hover:text-blue-300 transition-colors duration-300">
                                   {noc.noc_code} - {noc.title}
                                 </h2>
                                 {noc.teer && (
-                                  <div
-                                    className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold text-white bg-gradient-to-r ${getTeerColor(
-                                      noc.teer.title
-                                    )} shadow-lg mt-2`}
-                                  >
-                                    <TrendingUp className="w-4 h-4 mr-1" />
+                                  <div className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold text-white bg-gradient-to-r ${getTeerColor(noc.teer.title)} shadow-lg mt-2`}>
+                                    <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                                     {noc.teer.title}
                                   </div>
                                 )}
@@ -224,7 +316,7 @@ export default function NocSearch() {
                           </p>
 
                           {noc.hierarchy && (
-                            <div className="grid md:grid-cols-3 gap-4 p-4 bg-white/5 rounded-xl border border-white/10">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 p-3 sm:p-4 bg-white/5 rounded-xl border border-white/10">
                               <div>
                                 <div className="flex items-center gap-2 mb-2">
                                   <Users className="w-4 h-4 text-blue-400" />
@@ -263,12 +355,12 @@ export default function NocSearch() {
                         </div>
 
                         {noc.link && (
-                          <div className="flex-shrink-0">
+                          <div className="flex-shrink-0 mt-4 lg:mt-0">
                             <a
                               href={noc.link}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                              className="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                             >
                               <span>View Details</span>
                               <ExternalLink size={18} />
@@ -284,50 +376,46 @@ export default function NocSearch() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center items-center mt-12 gap-4">
-                <button
-                  onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={page === 1}
-                  className="flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl text-white font-semibold hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:transform hover:scale-105"
-                >
-                  <ChevronLeft size={20} />
-                  Previous
-                </button>
+              <div className="flex flex-col sm:flex-row justify-center items-center mt-12 gap-4 px-4">
+                <div className="flex w-full sm:w-auto gap-2">
+                  <button
+                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={page === 1}
+                    aria-label="Go to previous page"
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl text-white font-semibold hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                  >
+                    <ChevronLeft size={20} />
+                    <span className="hidden sm:inline">Previous</span>
+                  </button>
 
-                <div className="flex items-center gap-2">
-                  {[...Array(Math.min(5, totalPages))].map((_, i) => {
-                    const pageNum = Math.max(
-                      1,
-                      Math.min(page - 2 + i, totalPages - 4 + i)
-                    );
-                    if (pageNum > totalPages) return null;
-
-                    return (
-                      <button
-                        key={pageNum}
-                        onClick={() => setPage(pageNum)}
-                        className={`w-12 h-12 rounded-xl font-semibold transition-all duration-300 ${
-                          page === pageNum
-                            ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
-                            : "bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white"
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  })}
+                  <button
+                    onClick={() => setPage((prev) => (prev < totalPages ? prev + 1 : prev))}
+                    disabled={page === totalPages}
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl text-white font-semibold hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                  >
+                    <span className="hidden sm:inline">Next</span>
+                    <ChevronRight size={20} />
+                  </button>
                 </div>
 
-                <button
-                  onClick={() =>
-                    setPage((prev) => (prev < totalPages ? prev + 1 : prev))
-                  }
-                  disabled={page === totalPages}
-                  className="flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl text-white font-semibold hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:transform hover:scale-105"
-                >
-                  Next
-                  <ChevronRight size={20} />
-                </button>
+                {/* Page Numbers */}
+                <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto justify-center py-2">
+                  {getPageNumbers().map((pNum) => (
+                    <button
+                      key={pNum}
+                      onClick={() => setPage(pNum)}
+                      aria-label={`Go to page ${pNum}`}
+                      aria-current={page === pNum ? "page" : undefined}
+                      className={`min-w-[40px] h-10 rounded-xl font-semibold transition-all duration-300 ${
+                        page === pNum
+                          ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
+                          : "bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white"
+                      }`}
+                    >
+                      {pNum}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>

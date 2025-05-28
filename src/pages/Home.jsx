@@ -42,7 +42,7 @@ export default function Home() {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl mb-6 shadow-2xl">
             <FaTrophy className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-5xl sm:text-6xl font-black bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-4">
+          <h1 className="text-2xl md:text-6xl sm:text-3xl font-black bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-4">
             Latest Draw Results
           </h1>
           <p className="text-xl text-slate-400 font-medium">
@@ -73,8 +73,8 @@ export default function Home() {
                   </p>
                 </div>
               ) : latestDraw ? (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <motion.div
                       whileHover={{ scale: 1.02 }}
                       className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10"
@@ -120,7 +120,7 @@ export default function Home() {
                     </motion.div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <motion.div
                       whileHover={{ scale: 1.02 }}
                       className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10"

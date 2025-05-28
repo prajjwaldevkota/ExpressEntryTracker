@@ -151,12 +151,12 @@ export default function Trends() {
               <FaFilter className="text-indigo-400" />
               <h2 className="text-xl text-white font-semibold">Filter Categories</h2>
             </div>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-2 sm:gap-4">
               {categories.map((cat) => (
                 <motion.label
                   key={cat}
                   whileHover={{ scale: 1.05 }}
-                  className="relative inline-flex items-center px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white cursor-pointer hover:bg-white/10 transition-all duration-300"
+                  className="relative inline-flex items-center px-3 sm:px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white cursor-pointer hover:bg-white/10 transition-all duration-300 text-sm sm:text-base"
                 >
                   <input
                     type="checkbox"
@@ -184,7 +184,7 @@ export default function Trends() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden"
         >
-          <div className="p-6 h-[600px]">
+          <div className="p-4 sm:p-6 h-[400px] sm:h-[500px] md:h-[600px]">
             {loading ? (
               <div className="flex justify-center items-center h-full">
                 <div className="relative">

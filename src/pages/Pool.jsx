@@ -190,44 +190,38 @@ export default function Pool() {
                         <div className="flex items-center space-x-6 p-6 rounded-2xl hover:bg-slate-50/80 transition-all duration-300 cursor-pointer">
                           {/* Score Range Badge */}
                           <div
-                            className={`relative flex-shrink-0 w-24 h-16 bg-gradient-to-br ${getScoreColor(
+                            className={`relative flex-shrink-0 w-20 sm:w-24 h-14 sm:h-16 bg-gradient-to-br ${getScoreColor(
                               range.range
                             )} rounded-xl shadow-lg flex items-center justify-center ring-4 ${getRingColor(
                               range.range
                             )} group-hover:scale-110 transition-transform duration-300`}
                           >
-                            <span className="text-white font-bold text-sm">
+                            <span className="text-white font-bold text-xs sm:text-sm">
                               {range.range}
                             </span>
                           </div>
 
                           {/* Progress Bar Container */}
-                          <div className="flex-grow">
-                            <div className="flex justify-between items-center mb-2">
-                              <span className="text-lg font-bold text-slate-800">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-sm text-slate-600 font-medium">
                                 {range.value.toLocaleString()} candidates
                               </span>
-                              <span className="text-slate-500 font-semibold">
-                                {percentage.toFixed(3)}%
+                              <span className="text-sm text-slate-600 font-medium">
+                                {(
+                                  (range.value / totalCandidates) *
+                                  100
+                                ).toFixed(3)}
+                                %
                               </span>
                             </div>
-
-                            {/* Animated Progress Bar */}
-                            <div className="w-full h-4 bg-slate-200 rounded-full overflow-hidden shadow-inner">
-                              <motion.div
-                                initial={{ width: 0 }}
-                                animate={{ width: `${barWidth}%` }}
-                                transition={{
-                                  delay: index * 0.1 + 0.5,
-                                  duration: 1,
-                                  ease: "easeOut",
+                            <div className="h-2 sm:h-3 bg-white/10 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-all duration-300"
+                                style={{
+                                  width: `${(range.value / maxValue) * 100}%`,
                                 }}
-                                className={`h-full bg-gradient-to-r ${getScoreColor(
-                                  range.range
-                                )} shadow-lg relative overflow-hidden`}
-                              >
-                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 animate-pulse"></div>
-                              </motion.div>
+                              />
                             </div>
                           </div>
 

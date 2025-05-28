@@ -20,7 +20,7 @@ export default function History() {
   const [categories, setCategories] = useState([]);
   const [sortOrder, setSortOrder] = useState("desc");
 
-  // Fetch available categories for the filter.
+  // Fetch available categories
   useEffect(() => {
     axios
       .get(`${BASE_URL}/categories`)
@@ -28,7 +28,7 @@ export default function History() {
       .catch((err) => console.error("Error fetching categories:", err));
   }, []);
 
-  // Fetch draws based on filters.
+  // Fetch draws based on filters
   useEffect(() => {
     axios
       .get(`${BASE_URL}/draws`, {
@@ -38,12 +38,12 @@ export default function History() {
       .catch((err) => console.error("Error fetching draws:", err));
   }, [year, category]);
 
-  // Toggle the sort order between ascending and descending.
+  // Toggle sort order
   const toggleSortOrder = () => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
-  // Sort the draws by date.
+  // Sort draws by date
   const sortedDraws = [...draws].sort((a, b) => {
     const dateA = new Date(a.date);
     const dateB = new Date(b.date);
@@ -63,10 +63,10 @@ export default function History() {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl mb-6 shadow-2xl">
             <FaHistory className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-5xl sm:text-6xl font-black bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-4">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-4">
             Draw History
           </h1>
-          <p className="text-xl text-slate-400 font-medium">
+          <p className="text-base sm:text-lg md:text-xl text-slate-400 font-medium">
             Explore all Express Entry draws and their details
           </p>
         </motion.div>
@@ -81,9 +81,11 @@ export default function History() {
           <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-2xl">
             <div className="flex items-center gap-3 mb-6">
               <FaFilter className="text-blue-400 text-xl" />
-              <h2 className="text-2xl text-white font-semibold">Filter Draws</h2>
+              <h2 className="text-xl sm:text-2xl text-white font-semibold">
+                Filter Draws
+              </h2>
             </div>
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-xl blur"></div>
                 <input
@@ -91,7 +93,7 @@ export default function History() {
                   placeholder="Filter by year (e.g. 2024)"
                   value={year}
                   onChange={(e) => setYear(e.target.value)}
-                  className="relative w-full p-4 pl-12 rounded-xl border border-white/10 bg-black/40 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                  className="relative w-full p-4 pl-12 rounded-xl border border-white/10 bg-black/40 text-base sm:text-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
                 />
                 <FaCalendarAlt className="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400" />
               </div>
@@ -115,7 +117,7 @@ export default function History() {
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="relative w-full p-4 pl-12 rounded-xl border border-white/10 bg-black/40 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all appearance-none"
+                  className="relative w-full p-3 sm:p-4 pl-10 sm:pl-12 rounded-xl border border-white/10 bg-black/40 text-sm sm:text-base text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all appearance-none"
                 >
                   <option value="">All Categories</option>
                   {categories.map((cat) => (
@@ -128,14 +130,14 @@ export default function History() {
                     </option>
                   ))}
                 </select>
-                <FaTag className="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400" />
+                <FaTag className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-blue-400" />
               </div>
             </div>
           </div>
         </motion.div>
 
         {/* Draw Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {sortedDraws.length === 0 ? (
             <motion.div
               initial={{ opacity: 0 }}
@@ -148,19 +150,15 @@ export default function History() {
             sortedDraws.map((draw, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ scale: 1.02 }}
-                className="group relative"
+                className="group relative p-4 sm:p-6"
               >
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
                 <div className="relative bg-black/40 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+                    <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
                       Draw #{draw.drawNumber}
                     </h3>
-                    <span className="px-4 py-1.5 bg-gradient-to-r from-blue-600/20 to-purple-600/20 text-blue-300 rounded-full text-sm font-medium border border-blue-500/20">
+                    <span className="px-3 py-1 bg-gradient-to-r from-blue-600/20 to-purple-600/20 text-xs sm:text-sm text-blue-300 rounded-full font-medium border border-blue-500/20">
                       {draw.category || "General"}
                     </span>
                   </div>
@@ -170,19 +168,23 @@ export default function History() {
                       <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center mr-3">
                         <FaCalendarAlt className="text-blue-400" />
                       </div>
-                      <span>{draw.date}</span>
+                      <span className="text-sm sm:text-base">{draw.date}</span>
                     </div>
                     <div className="flex items-center text-gray-300">
                       <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center mr-3">
                         <FaHashtag className="text-purple-400" />
                       </div>
-                      <span>CRS: {draw.minimumCRS}</span>
+                      <span className="text-sm sm:text-base">
+                        CRS: {draw.minimumCRS}
+                      </span>
                     </div>
                     <div className="flex items-center text-gray-300">
                       <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center mr-3">
                         <FaUsers className="text-green-400" />
                       </div>
-                      <span>{draw.invitationsIssued} Invitations</span>
+                      <span className="text-sm sm:text-base">
+                        {draw.invitationsIssued} Invitations
+                      </span>
                     </div>
                   </div>
                 </div>
