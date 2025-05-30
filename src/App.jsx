@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useLocation,
+} from "react-router-dom";
 import Home from "./pages/Home";
 import History from "./pages/History";
 import Trends from "./pages/Trends";
@@ -28,14 +34,18 @@ function NavItem({ path, label, icon: Icon, isActive, onClick }) {
       aria-current={isActive ? "page" : undefined}
     >
       <div className="flex items-center gap-2">
-        <Icon className={`w-5 h-5 transition-colors duration-300 ${
-          isActive ? "text-blue-400" : "group-hover:text-blue-400"
-        }`} />
+        <Icon
+          className={`w-5 h-5 transition-colors duration-300 ${
+            isActive ? "text-blue-400" : "group-hover:text-blue-400"
+          }`}
+        />
         <span className="font-medium">{label}</span>
       </div>
-      <div className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300 ${
-        isActive ? "w-full" : "w-0 group-hover:w-full"
-      }`} />
+      <div
+        className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300 ${
+          isActive ? "w-full" : "w-0 group-hover:w-full"
+        }`}
+      />
     </Link>
   );
 }
@@ -54,7 +64,7 @@ function MobileMenu({ isOpen, onClose, navItems, currentPath }) {
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
             onClick={onClose}
           />
-          
+
           {/* Menu Content */}
           <motion.div
             initial={{ opacity: 0, x: "100%" }}
@@ -94,7 +104,7 @@ export default function App() {
 
     window.addEventListener("resize", updateHeight);
     window.addEventListener("orientationchange", updateHeight);
-    
+
     return () => {
       window.removeEventListener("resize", updateHeight);
       window.removeEventListener("orientationchange", updateHeight);
@@ -122,9 +132,12 @@ export default function App() {
               >
                 <span className="tracking-tight">EE</span>
               </motion.div>
-              <span className="text-xl sm:text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent drop-shadow-lg tracking-tight">
+              <a
+                href="/"
+                className="text-xl sm:text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent drop-shadow-lg tracking-tight"
+              >
                 Express Entry <span className="text-blue-300">Tracker</span>
-              </span>
+              </a>
             </div>
 
             {/* Desktop Menu */}
