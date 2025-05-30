@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, memo } from "react";
 import axios from "axios";
 import { NOC_URL } from "../Utils/utils";
 import { useTranslation } from "react-i18next";
@@ -13,6 +13,182 @@ import {
   Users,
   TrendingUp,
 } from "lucide-react";
+import { motion } from "framer-motion";
+
+// Memoized NocCard component
+const NocCard = memo(function NocCard({ noc, index }) {
+  const { t } = useTranslation();
+
+  const getTeerColor = (teer) => {
+    const colors = {
+      "TEER 0": "from-slate-800 to-slate-900",
+      "TEER 1": "from-gray-800 to-zinc-900",
+      "TEER 2": "from-stone-800 to-neutral-900",
+      "TEER 3": "from-zinc-800 to-gray-900",
+      "TEER 4": "from-neutral-800 to-stone-900",
+      "TEER 5": "from-gray-900 to-black",
+    };
+    return colors[teer] || "from-gray-800 to-slate-900";
+  };
+
+  return (
+    <motion.div
+      key={noc.noc_code}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: index * 0.05 }}
+      style={{ willChange: "transform, opacity" }}
+      className="group hover:transform hover:scale-[1.02] transition-all duration-300"
+    >
+      <div className="relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-600/20 rounded-xl sm:rounded-2xl blur group-hover:blur-lg transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
+        <div className="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl sm:rounded-2xl p-6 sm:p-8 hover:bg-white/15 transition-all duration-300">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 sm:gap-6">
+            <div className="flex-1">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-white font-bold text-sm sm:text-base md:text-lg">
+                      {noc.noc_code.slice(0, 2)}
+                    </span>
+                  </div>
+                  <div>
+                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white group-hover:text-blue-300 transition-colors duration-300">
+                      {noc.noc_code} - {noc.title}
+                    </h2>
+                    {noc.teer && (
+                      <div
+                        className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold text-white bg-gradient-to-r ${getTeerColor(
+                          noc.teer.title
+                        )} shadow-lg mt-2`}
+                      >
+                        <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                        {noc.teer.title}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-gray-300 text-base sm:text-lg leading-relaxed mb-4 sm:mb-6">
+                {noc.description}
+              </p>
+
+              {noc.hierarchy && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 p-3 sm:p-4 bg-white/5 rounded-lg sm:rounded-xl border border-white/10">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Users className="w-4 h-4 text-blue-400" />
+                      <span className="text-sm font-semibold text-blue-400">
+                        {t("noc.broadGroup")}
+                      </span>
+                    </div>
+                    <p className="text-gray-300 text-sm">
+                      {noc.hierarchy.broad_group?.title}
+                    </p>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Layers className="w-4 h-4 text-purple-400" />
+                      <span className="text-sm font-semibold text-purple-400">
+                        {t("noc.majorGroup")}
+                      </span>
+                    </div>
+                    <p className="text-gray-300 text-sm">
+                      {noc.hierarchy.major_group?.title}
+                    </p>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Target className="w-4 h-4 text-green-400" />
+                      <span className="text-sm font-semibold text-green-400">
+                        {t("noc.minorGroup")}
+                      </span>
+                    </div>
+                    <p className="text-gray-300 text-sm">
+                      {noc.hierarchy.minor_group?.title}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {noc.link && (
+              <div className="flex-shrink-0 mt-4 lg:mt-0">
+                <a
+                  href={noc.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg sm:rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  <span className="text-sm sm:text-base">
+                    {t("noc.viewDetails")}
+                  </span>
+                  <ExternalLink size={16} />
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+});
+
+// Memoized LoadingSkeleton component
+const LoadingSkeleton = memo(function LoadingSkeleton() {
+  return (
+    <div className="w-full max-w-6xl mt-6 sm:mt-8 px-4">
+      {[...Array(3)].map((_, index) => (
+        <motion.div
+          key={index}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: index * 0.1 }}
+          className="bg-white/5 backdrop-blur-lg border border-white/20 rounded-xl sm:rounded-2xl p-6 sm:p-8 mb-4 sm:mb-6"
+        >
+          <div className="h-6 sm:h-8 bg-white/10 rounded-lg w-3/4 mb-3 sm:mb-4 animate-pulse"></div>
+          <div className="h-3 sm:h-4 bg-white/10 rounded-lg w-1/2 mb-2 animate-pulse"></div>
+          <div className="h-3 sm:h-4 bg-white/10 rounded-lg w-full animate-pulse"></div>
+        </motion.div>
+      ))}
+    </div>
+  );
+});
+
+// Memoized SearchInput component
+const SearchInput = memo(function SearchInput({ value, onChange, onFocus, onBlur, focused }) {
+  const { t } = useTranslation();
+
+  return (
+    <div
+      className={`relative transition-all duration-300 ${
+        focused ? "transform scale-105" : ""
+      }`}
+    >
+      <div className="absolute inset-0 bg-gradient-to-r from-zinc-600 to-gray-700 rounded-xl sm:rounded-2xl blur opacity-30"></div>
+      <div className="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl sm:rounded-2xl p-2">
+        <div className="relative">
+          <Search
+            className={`absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 transition-colors duration-300 ${
+              focused ? "text-blue-400" : "text-gray-400"
+            }`}
+            size={20}
+          />
+          <input
+            type="text"
+            placeholder={t("noc.searchPlaceholder")}
+            value={value}
+            onChange={onChange}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            className="w-full pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 md:py-4 bg-transparent text-white placeholder-gray-400 text-sm sm:text-base md:text-lg focus:outline-none"
+          />
+        </div>
+      </div>
+    </div>
+  );
+});
 
 export default function NocSearch() {
   // State variables for search term, NOC data and pagination
@@ -79,44 +255,19 @@ export default function NocSearch() {
 
   const totalPages = Math.ceil(totalEntries / limit);
 
-  const getTeerColor = (teer) => {
-    const colors = {
-      "TEER 0": "from-slate-800 to-slate-900",
-      "TEER 1": "from-gray-800 to-zinc-900",
-      "TEER 2": "from-stone-800 to-neutral-900",
-      "TEER 3": "from-zinc-800 to-gray-900",
-      "TEER 4": "from-neutral-800 to-stone-900",
-      "TEER 5": "from-gray-900 to-black",
-    };
-    return colors[teer] || "from-gray-800 to-slate-900";
-  };
+  // Memoized handlers
+  const handleSearchChange = useCallback((e) => {
+    setSearchTerm(e.target.value);
+    setPage(1);
+  }, []);
 
-  const getPageNumbers = () => {
-    const total = totalPages;
-    let start = page - 2;
-    let end = page + 2;
+  const handleSearchFocus = useCallback(() => {
+    setSearchFocused(true);
+  }, []);
 
-    // shift window right if start falls below 1
-    if (start < 1) {
-      end += 1 - start;
-      start = 1;
-    }
-
-    // shift window left if end exceeds total
-    if (end > total) {
-      start -= end - total;
-      end = total;
-    }
-
-    // make sure start never falls below 1
-    if (start < 1) start = 1;
-
-    const pages = [];
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-    return pages;
-  };
+  const handleSearchBlur = useCallback(() => {
+    setSearchFocused(false);
+  }, []);
 
   // Add keyboard navigation for pagination
   useEffect(() => {
@@ -166,35 +317,13 @@ export default function NocSearch() {
 
         {/* Search Section */}
         <div className="max-w-2xl mx-auto mb-8 sm:mb-12 px-4">
-          <div
-            className={`relative transition-all duration-300 ${
-              searchFocused ? "transform scale-105" : ""
-            }`}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-zinc-600 to-gray-700 rounded-xl sm:rounded-2xl blur opacity-30"></div>
-            <div className="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl sm:rounded-2xl p-2">
-              <div className="relative">
-                <Search
-                  className={`absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 transition-colors duration-300 ${
-                    searchFocused ? "text-blue-400" : "text-gray-400"
-                  }`}
-                  size={20}
-                />
-                <input
-                  type="text"
-                  placeholder={t("noc.searchPlaceholder")}
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    setPage(1);
-                  }}
-                  onFocus={() => setSearchFocused(true)}
-                  onBlur={() => setSearchFocused(false)}
-                  className="w-full pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3 md:py-4 bg-transparent text-white placeholder-gray-400 text-sm sm:text-base md:text-lg focus:outline-none"
-                />
-              </div>
-            </div>
-          </div>
+          <SearchInput
+            value={searchTerm}
+            onChange={handleSearchChange}
+            onFocus={handleSearchFocus}
+            onBlur={handleSearchBlur}
+            focused={searchFocused}
+          />
         </div>
 
         {/* Stats Bar */}
@@ -241,19 +370,7 @@ export default function NocSearch() {
             <p className="text-white text-lg sm:text-xl mt-4 sm:mt-6 animate-pulse">
               {t("noc.searching")}
             </p>
-            {/* Add skeleton cards */}
-            <div className="w-full max-w-6xl mt-6 sm:mt-8 px-4">
-              {[...Array(3)].map((_, index) => (
-                <div
-                  key={index}
-                  className="bg-white/5 backdrop-blur-lg border border-white/20 rounded-xl sm:rounded-2xl p-6 sm:p-8 mb-4 sm:mb-6 animate-pulse"
-                >
-                  <div className="h-6 sm:h-8 bg-white/10 rounded-lg w-3/4 mb-3 sm:mb-4"></div>
-                  <div className="h-3 sm:h-4 bg-white/10 rounded-lg w-1/2 mb-2"></div>
-                  <div className="h-3 sm:h-4 bg-white/10 rounded-lg w-full"></div>
-                </div>
-              ))}
-            </div>
+            <LoadingSkeleton />
           </div>
         )}
 
@@ -291,103 +408,7 @@ export default function NocSearch() {
           <div className="max-w-6xl mx-auto px-4">
             <div className="grid gap-4 sm:gap-6">
               {nocData.map((noc, index) => (
-                <div
-                  key={noc.noc_code}
-                  className="group hover:transform hover:scale-[1.02] transition-all duration-300"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-600/20 rounded-xl sm:rounded-2xl blur group-hover:blur-lg transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
-                    <div className="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl sm:rounded-2xl p-6 sm:p-8 hover:bg-white/15 transition-all duration-300">
-                      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 sm:gap-6">
-                        <div className="flex-1">
-                          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-4">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg">
-                                <span className="text-white font-bold text-sm sm:text-base md:text-lg">
-                                  {noc.noc_code.slice(0, 2)}
-                                </span>
-                              </div>
-                              <div>
-                                <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white group-hover:text-blue-300 transition-colors duration-300">
-                                  {noc.noc_code} - {noc.title}
-                                </h2>
-                                {noc.teer && (
-                                  <div
-                                    className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold text-white bg-gradient-to-r ${getTeerColor(
-                                      noc.teer.title
-                                    )} shadow-lg mt-2`}
-                                  >
-                                    <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                                    {noc.teer.title}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-
-                          <p className="text-gray-300 text-base sm:text-lg leading-relaxed mb-4 sm:mb-6">
-                            {noc.description}
-                          </p>
-
-                          {noc.hierarchy && (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 p-3 sm:p-4 bg-white/5 rounded-lg sm:rounded-xl border border-white/10">
-                              <div>
-                                <div className="flex items-center gap-2 mb-2">
-                                  <Users className="w-4 h-4 text-blue-400" />
-                                  <span className="text-sm font-semibold text-blue-400">
-                                    {t("noc.broadGroup")}
-                                  </span>
-                                </div>
-                                <p className="text-gray-300 text-sm">
-                                  {noc.hierarchy.broad_group?.title}
-                                </p>
-                              </div>
-                              <div>
-                                <div className="flex items-center gap-2 mb-2">
-                                  <Layers className="w-4 h-4 text-purple-400" />
-                                  <span className="text-sm font-semibold text-purple-400">
-                                    {t("noc.majorGroup")}
-                                  </span>
-                                </div>
-                                <p className="text-gray-300 text-sm">
-                                  {noc.hierarchy.major_group?.title}
-                                </p>
-                              </div>
-                              <div>
-                                <div className="flex items-center gap-2 mb-2">
-                                  <Target className="w-4 h-4 text-green-400" />
-                                  <span className="text-sm font-semibold text-green-400">
-                                    {t("noc.minorGroup")}
-                                  </span>
-                                </div>
-                                <p className="text-gray-300 text-sm">
-                                  {noc.hierarchy.minor_group?.title}
-                                </p>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-
-                        {noc.link && (
-                          <div className="flex-shrink-0 mt-4 lg:mt-0">
-                            <a
-                              href={noc.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg sm:rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-                            >
-                              <span className="text-sm sm:text-base">
-                                {t("noc.viewDetails")}
-                              </span>
-                              <ExternalLink size={16} />
-                            </a>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <NocCard key={noc.noc_code} noc={noc} index={index} />
               ))}
             </div>
 
@@ -424,19 +445,19 @@ export default function NocSearch() {
 
                 {/* Page Numbers */}
                 <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto justify-center py-2">
-                  {getPageNumbers().map((pNum) => (
+                  {Array.from({ length: totalPages }, (_, i) => (
                     <button
-                      key={pNum}
-                      onClick={() => setPage(pNum)}
-                      aria-label={`${t("noc.goToPage")} ${pNum}`}
-                      aria-current={page === pNum ? "page" : undefined}
+                      key={i + 1}
+                      onClick={() => setPage(i + 1)}
+                      aria-label={`${t("noc.goToPage")} ${i + 1}`}
+                      aria-current={page === i + 1 ? "page" : undefined}
                       className={`min-w-[32px] sm:min-w-[40px] h-8 sm:h-10 rounded-lg sm:rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 ${
-                        page === pNum
+                        page === i + 1
                           ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
                           : "bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white"
                       }`}
                     >
-                      {pNum}
+                      {i + 1}
                     </button>
                   ))}
                 </div>

@@ -3,4 +3,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://expressentrytracker.netlify.app/sitemap.xml 
+Sitemap: https://expressentrytracker.netlify.app/sitemap.xml
+
+# Disallow API routes
+Disallow: /api/ 

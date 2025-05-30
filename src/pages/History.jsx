@@ -23,9 +23,10 @@ const DrawCard = memo(function DrawCard({ draw, index }) {
       className="group relative p-4 sm:p-6"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      transition={{ duration: 0.3, delay: index * 0.05 }}
+      style={{ willChange: "transform, opacity" }}
     >
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl blur opacity-30 group-hover:opacity-100 transition duration-500 group-hover:duration-200"></div>
       <div className="relative bg-black/40 backdrop-blur-xl border border-white/10 p-6 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
@@ -60,6 +61,28 @@ const DrawCard = memo(function DrawCard({ draw, index }) {
         </div>
       </div>
     </motion.div>
+  );
+});
+
+// Loading skeleton component
+const DrawCardSkeleton = memo(function DrawCardSkeleton() {
+  return (
+    <div className="group relative p-4 sm:p-6">
+      <div className="relative bg-black/40 backdrop-blur-xl border border-white/10 p-6 rounded-3xl">
+        <div className="flex items-center justify-between mb-4">
+          <div className="h-8 w-32 bg-white/10 rounded-lg animate-pulse"></div>
+          <div className="h-6 w-24 bg-white/10 rounded-full animate-pulse"></div>
+        </div>
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex items-center">
+              <div className="w-10 h-10 bg-white/10 rounded-xl animate-pulse mr-3"></div>
+              <div className="h-6 w-40 bg-white/10 rounded-lg animate-pulse"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 });
 
@@ -217,6 +240,25 @@ export default function History() {
 
   const totalPages = Math.ceil(sortedDraws.length / cardsPerPage);
 
+  // Add keyboard navigation for pagination
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === "ArrowLeft" && currentPage > 1) {
+        setCurrentPage(prev => prev - 1);
+      } else if (e.key === "ArrowRight" && currentPage < totalPages) {
+        setCurrentPage(prev => prev + 1);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [currentPage, totalPages]);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [year, category, sortOrder]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-gray-900 pt-14 sm:pt-20 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -259,13 +301,11 @@ export default function History() {
         {/* Draw Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {loading ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="col-span-full text-center py-12"
-            >
-              <p className="text-white/80 text-xl">Loading draws...</p>
-            </motion.div>
+            <>
+              {[...Array(cardsPerPage)].map((_, index) => (
+                <DrawCardSkeleton key={index} />
+              ))}
+            </>
           ) : paginatedDraws.length === 0 ? (
             <motion.div
               initial={{ opacity: 0 }}
@@ -283,23 +323,41 @@ export default function History() {
 
         {/* Pagination */}
         {!loading && totalPages > 1 && (
-          <div className="flex justify-center items-center mt-8 gap-2">
+          <div className="flex justify-center items-center mt-8 gap-4">
+            <button
+              onClick={() => setCurrentPage(1)}
+              disabled={currentPage === 1}
+              className="px-3 py-2 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-white transition-colors duration-200"
+              aria-label="First page"
+            >
+              First
+            </button>
             <button
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
               className="px-4 py-2 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-white transition-colors duration-200"
+              aria-label="Previous page"
             >
               Previous
             </button>
-            <span className="text-white/80">
+            <span className="text-white/80 min-w-[100px] text-center">
               Page {currentPage} of {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
               className="px-4 py-2 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-white transition-colors duration-200"
+              aria-label="Next page"
             >
               Next
+            </button>
+            <button
+              onClick={() => setCurrentPage(totalPages)}
+              disabled={currentPage === totalPages}
+              className="px-3 py-2 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-white transition-colors duration-200"
+              aria-label="Last page"
+            >
+              Last
             </button>
           </div>
         )}

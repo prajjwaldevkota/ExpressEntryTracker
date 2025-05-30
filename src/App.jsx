@@ -19,21 +19,24 @@ import {
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Lazy load pages for better performance
+// Lazy load pages with loading fallback
 const Home = lazy(() => import("./pages/Home"));
 const History = lazy(() => import("./pages/History"));
 const Trends = lazy(() => import("./pages/Trends"));
 const Pool = lazy(() => import("./pages/Pool"));
 const NOC = lazy(() => import("./pages/NOC"));
 
-// Loading component for Suspense
+// Memoized LoadingSpinner component
 const LoadingSpinner = memo(() => (
   <div className="flex items-center justify-center min-h-screen">
-    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    <div className="relative">
+      <div className="w-12 h-12 border-4 border-blue-500/30 rounded-full animate-spin"></div>
+      <div className="absolute top-0 left-0 w-12 h-12 border-4 border-transparent border-t-blue-500 rounded-full animate-spin"></div>
+    </div>
   </div>
 ));
 
-// Memoized NavItem component
+// Memoized NavItem component with optimized animations
 const NavItem = memo(function NavItem({
   path,
   label,
@@ -41,39 +44,29 @@ const NavItem = memo(function NavItem({
   isActive,
   onClick,
 }) {
-  const handleClick = useCallback(() => {
-    onClick?.();
-  }, [onClick]);
-
   return (
-    <Link
-      to={path}
-      onClick={handleClick}
-      className={`group relative text-white/90 hover:text-white transition-all duration-300 ${
-        isActive ? "text-white" : ""
-      }`}
-      aria-current={isActive ? "page" : undefined}
+    <motion.div
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ duration: 0.2 }}
     >
-      <div className="flex items-center gap-2">
-        {Icon && (
-          <Icon
-            className={`w-4 h-4 sm:w-5 sm:h-5 transition-colors duration-300 ${
-              isActive ? "text-blue-500" : "group-hover:text-blue-500"
-            }`}
-          />
-        )}
-        <span className="font-medium text-sm sm:text-base">{label}</span>
-      </div>
-      <div
-        className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 ${
-          isActive ? "w-full" : "w-0 group-hover:w-full"
+      <Link
+        to={path}
+        onClick={onClick}
+        className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors duration-300 ${
+          isActive
+            ? "bg-white/10 text-white"
+            : "text-white/70 hover:text-white hover:bg-white/5"
         }`}
-      />
-    </Link>
+      >
+        {Icon && <Icon className="w-5 h-5" />}
+        <span className="font-medium">{label}</span>
+      </Link>
+    </motion.div>
   );
 });
 
-// Memoized MobileMenu component
+// Memoized MobileMenu component with optimized animations
 const MobileMenu = memo(function MobileMenu({
   isOpen,
   onClose,
@@ -92,6 +85,7 @@ const MobileMenu = memo(function MobileMenu({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.2 }}
+          style={{ willChange: "transform, opacity" }}
           className="fixed top-[3.5rem] sm:top-20 left-0 w-full bg-gray-900/95 backdrop-blur-xl border-b border-white/20 z-40 md:hidden"
         >
           <div className="max-w-7xl mx-auto px-4 py-3">
@@ -112,7 +106,7 @@ const MobileMenu = memo(function MobileMenu({
   );
 });
 
-// Memoized Navigation component
+// Memoized Navigation component with optimized state management
 const Navigation = memo(function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
@@ -141,6 +135,18 @@ const Navigation = memo(function Navigation() {
     setIsMobileMenuOpen(false);
   }, []);
 
+  // Add keyboard navigation for mobile menu
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === "Escape" && isMobileMenuOpen) {
+        closeMobileMenu();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [isMobileMenuOpen, closeMobileMenu]);
+
   useEffect(() => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -154,6 +160,7 @@ const Navigation = memo(function Navigation() {
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.2 }}
               className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-white font-extrabold text-lg sm:text-xl md:text-2xl shadow-lg"
             >
               <span className="tracking-tight">EE</span>
