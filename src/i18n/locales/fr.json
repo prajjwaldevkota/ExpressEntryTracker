@@ -1,0 +1,68 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "history": "Historique",
+    "trends": "Tendances",
+    "pool": "Bassin",
+    "noc": "Recherche CNP"
+  },
+  "home": {
+    "title": "Résultats du Dernier Tirage",
+    "subtitle": "Restez informé du dernier tirage Entrée Express",
+    "drawDate": "Date du Tirage",
+    "drawNumber": "Numéro du Tirage",
+    "invitations": "Total des Invitations",
+    "date": "Date",
+    "year": "Année",
+    "minimumCRS": "Minimum CRS Score",
+    "category": "Catégorie"
+  },
+  "history": {
+    "title": "Historique des Tirages",
+    "subtitle": "Explorez les tirages Entrée Express passés"
+  },
+  "trends": {
+    "title": "Tendances des Invitations",
+    "subtitle": "Suivez les invitations Entrée Express dans le temps",
+    "chartTitle": "Invitations Annuelles",
+    "xAxisLabel": "Année",
+    "yAxisLabel": "Total des Invitations",
+    "overallInvitations": "Invitations Totales"
+  },
+  "pool": {
+    "title": "Répartition du Bassin",
+    "subtitle": "Distribution actuelle des candidats Entrée Express par plages de scores CRS",
+    "totalPool": "Total du Bassin",
+    "distribution": "Répartition des scores CRS",
+    "breakdown": "Répartition interactive du bassin",
+    "dataUpdated": "Données mises à jour le",
+    "drawNumber": "Numéro du Tirage",
+    "drawDate": "Date du Tirage",
+    "candidates": "Candidats",
+    "range": "Plage",
+    "highestConcentration": "Concentration la plus élevée",
+    "highScore": "Score élevé",
+    "lowScore": "Score faible",
+    "midScore": "Score moyen"
+  },
+  "noc": {
+    "title": "Recherche CNP",
+    "subtitle": "Trouvez votre code de profession",
+    "searchPlaceholder": "Recherchez votre profession idéale...",
+    "found": "Trouvé",
+    "occupations": "professions",
+    "page": "Page",
+    "of": "sur",
+    "noResults": "Aucune profession trouvée",
+    "tryDifferent": "Essayez d'ajuster vos termes de recherche ou explorez différents mots-clés",
+    "viewDetails": "Voir les Détails",
+    "broadGroup": "Groupe Large",
+    "majorGroup": "Groupe Majeur",
+    "minorGroup": "Groupe Mineur"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "retry": "Réessayer"
+  }
+} 

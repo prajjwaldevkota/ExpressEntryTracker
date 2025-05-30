@@ -1,0 +1,69 @@
+{
+  "nav": {
+    "home": "Home",
+    "history": "History",
+    "trends": "Trends",
+    "pool": "Pool",
+    "noc": "NOC Search"
+  },
+  "home": {
+    "title": "Latest Draw Results",
+    "subtitle": "Stay updated with the most recent Express Entry draw",
+    "drawDate": "Draw Date",
+    "drawNumber": "Draw Number",
+    "invitations": "Total Invitations",
+    "date": "Date",
+    "minimumCRS": "Minimum CRS Score",
+    "category": "Category",
+    "year": "Year",
+    "latestDraw": "Latest Draw"
+  },
+  "history": {
+    "title": "Draw History",
+    "subtitle": "Explore past Express Entry draws"
+  },
+  "trends": {
+    "title": "Invitations Trends",
+    "subtitle": "Track Express Entry invitations over time",
+    "chartTitle": "Yearly Invitations Issued",
+    "xAxisLabel": "Year",
+    "yAxisLabel": "Total Invitations",
+    "overallInvitations": "Overall Invitations"
+  },
+  "pool": {
+    "title": "Pool Breakdown",
+    "subtitle": "Current Express Entry candidate distribution by CRS score ranges",
+    "totalPool": "Total Pool",
+    "distribution": "CRS Score Distribution",
+    "breakdown": "Interactive breakdown of candidate pool",
+    "dataUpdated": "Data updated as of",
+    "drawNumber": "Draw Number",
+    "drawDate": "Draw Date",
+    "candidates": "Candidates",
+    "range": "Range",
+    "highestConcentration": "Highest Concentration",
+    "highScore": "High Score",
+    "lowScore": "Low Score",
+    "midScore": "Mid Score"
+  },
+  "noc": {
+    "title": "NOC Search",
+    "subtitle": "Find your occupation code",
+    "searchPlaceholder": "Search for your dream occupation...",
+    "found": "Found",
+    "occupations": "occupations",
+    "page": "Page",
+    "of": "of",
+    "noResults": "No occupations found",
+    "tryDifferent": "Try adjusting your search terms or explore different keywords",
+    "viewDetails": "View Details",
+    "broadGroup": "Broad Group",
+    "majorGroup": "Major Group",
+    "minorGroup": "Minor Group"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry"
+  }
+}
