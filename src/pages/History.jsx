@@ -15,6 +15,23 @@ import { useTranslation } from "react-i18next";
 import { BASE_URL } from "../Utils/utils";
 import { memo } from "react";
 
+// Add custom debounce hook at the top level
+function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
 // Memoized DrawCard component
 const DrawCard = memo(function DrawCard({ draw, index }) {
   return (
@@ -161,7 +178,8 @@ const FilterSection = memo(function FilterSection({
 
 export default function History() {
   const [draws, setDraws] = useState([]);
-  const [year, setYear] = useState("");
+  const [yearInput, setYearInput] = useState(""); // Immediate input value
+  const debouncedYear = useDebounce(yearInput, 500); // Debounced value for filtering
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [sortOrder, setSortOrder] = useState("desc");
@@ -170,14 +188,6 @@ export default function History() {
   const cardsPerPage = 6;
   const { t } = useTranslation();
 
-  // Memoized handlers
-  const handleYearChange = useCallback((e) => {
-    setYear(e.target.value);
-  }, []);
-
-  const handleCategoryChange = useCallback((e) => {
-    setCategory(e.target.value);
-  }, []);
 
   const toggleSortOrder = useCallback(() => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
@@ -206,7 +216,7 @@ export default function History() {
 
     axios
       .get(`${BASE_URL}/draws`, {
-        params: { year: year || undefined, category: category || undefined },
+        params: { year: debouncedYear || undefined, category: category || undefined },
         signal: controller.signal,
       })
       .then((res) => {
@@ -221,7 +231,7 @@ export default function History() {
       });
 
     return () => controller.abort();
-  }, [year, category]);
+  }, [debouncedYear, category]);
 
   // Memoized sorted draws
   const sortedDraws = useMemo(() => {
@@ -257,7 +267,7 @@ export default function History() {
   // Reset to first page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [year, category, sortOrder]);
+  }, [debouncedYear, category, sortOrder]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-gray-900 pt-14 sm:pt-20 pb-12">
@@ -289,10 +299,10 @@ export default function History() {
 
         {/* Filter Section */}
         <FilterSection
-          year={year}
-          setYear={handleYearChange}
+          year={yearInput}
+          setYear={setYearInput}
           category={category}
-          setCategory={handleCategoryChange}
+          setCategory={setCategory}
           categories={categories}
           sortOrder={sortOrder}
           toggleSortOrder={toggleSortOrder}
