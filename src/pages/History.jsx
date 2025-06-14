@@ -178,8 +178,8 @@ const FilterSection = memo(function FilterSection({
 
 export default function History() {
   const [draws, setDraws] = useState([]);
-  const [yearInput, setYearInput] = useState(""); // Immediate input value
-  const debouncedYear = useDebounce(yearInput, 500); // Debounced value for filtering
+  const [yearInput, setYearInput] = useState(""); 
+  const debouncedYear = useDebounce(yearInput, 500); 
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [sortOrder, setSortOrder] = useState("desc");
