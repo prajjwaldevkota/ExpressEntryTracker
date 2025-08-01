@@ -4,7 +4,8 @@
     "history": "History",
     "trends": "Trends",
     "pool": "Pool",
-    "noc": "NOC Search"
+    "noc": "NOC Search",
+    "calculator": "CRS Calculator"
   },
   "home": {
     "title": "Latest Draw Results",
@@ -65,5 +66,22 @@
     "loading": "Loading...",
     "error": "An error occurred",
     "retry": "Retry"
+  },
+  "calculator": {
+    "title": "CRS Calculator",
+    "subtitle": "Calculate your Comprehensive Ranking System score",
+    "personalInfo": "Personal Information",
+    "workExperience": "Work Experience",
+    "languageProficiency": "Language Proficiency",
+    "additionalFactors": "Additional Factors",
+    "yourScore": "Your CRS Score",
+    "totalScore": "Total CRS Score",
+    "scoreBreakdown": "Score Breakdown",
+    "scoreAnalysis": "Score Analysis",
+    "fillForm": "Fill in the form to calculate your CRS score",
+    "excellent": "Excellent! Your score is competitive for Express Entry draws.",
+    "good": "Good score, but you may want to improve your profile.",
+    "improve": "Consider improving your score through additional factors.",
+    "tip": "Tip: Focus on improving language skills and gaining Canadian work experience to boost your score."
   }
 }

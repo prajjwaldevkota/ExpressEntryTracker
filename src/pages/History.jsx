@@ -1,5 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
-import axios from "axios";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import {
   FaSortAmountDown,
   FaSortAmountUp,
@@ -12,7 +11,7 @@ import {
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { BASE_URL } from "../Utils/utils";
+import { usePaginatedData, useCategories } from "../Utils/useOptimizedData";
 import { memo } from "react";
 
 // Add custom debounce hook at the top level
@@ -177,70 +176,35 @@ const FilterSection = memo(function FilterSection({
 });
 
 export default function History() {
-  const [draws, setDraws] = useState([]);
   const [yearInput, setYearInput] = useState(""); 
   const debouncedYear = useDebounce(yearInput, 500); 
   const [category, setCategory] = useState("");
-  const [categories, setCategories] = useState([]);
   const [sortOrder, setSortOrder] = useState("desc");
-  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const cardsPerPage = 6;
   const { t } = useTranslation();
-
 
   const toggleSortOrder = useCallback(() => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   }, []);
 
-  // Fetch available categories
-  useEffect(() => {
-    const controller = new AbortController();
+  // Use optimized data hooks
+  const { data: categoriesData } = useCategories();
+  const categories = categoriesData?.categories || [];
 
-    axios
-      .get(`${BASE_URL}/categories`, { signal: controller.signal })
-      .then((res) => setCategories(res.data.categories))
-      .catch((err) => {
-        if (!axios.isCancel(err)) {
-          console.error("Error fetching categories:", err);
-        }
-      });
-
-    return () => controller.abort();
-  }, []);
-
-  // Fetch draws based on filters
-  useEffect(() => {
-    const controller = new AbortController();
-    setLoading(true);
-
-    axios
-      .get(`${BASE_URL}/draws`, {
-        params: { year: debouncedYear || undefined, category: category || undefined },
-        signal: controller.signal,
-      })
-      .then((res) => {
-        setDraws(res.data.draws);
-        setLoading(false);
-      })
-      .catch((err) => {
-        if (!axios.isCancel(err)) {
-          console.error("Error fetching draws:", err);
-          setLoading(false);
-        }
-      });
-
-    return () => controller.abort();
-  }, [debouncedYear, category]);
+  const { data: drawsData, loading } = usePaginatedData('/draws', {
+    year: debouncedYear || undefined,
+    category: category || undefined
+  }, 50);
 
   // Memoized sorted draws
   const sortedDraws = useMemo(() => {
-    return [...draws].sort((a, b) => {
+    return [...(drawsData || [])].sort((a, b) => {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);
       return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
     });
-  }, [draws, sortOrder]);
+  }, [drawsData, sortOrder]);
 
   // Memoized paginated draws
   const paginatedDraws = useMemo(() => {
@@ -250,27 +214,13 @@ export default function History() {
 
   const totalPages = Math.ceil(sortedDraws.length / cardsPerPage);
 
-  // Add keyboard navigation for pagination
-  useEffect(() => {
-    const handleKeyPress = (e) => {
-      if (e.key === "ArrowLeft" && currentPage > 1) {
-        setCurrentPage(prev => prev - 1);
-      } else if (e.key === "ArrowRight" && currentPage < totalPages) {
-        setCurrentPage(prev => prev + 1);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [currentPage, totalPages]);
-
   // Reset to first page when filters change
-  useEffect(() => {
+  useMemo(() => {
     setCurrentPage(1);
   }, [debouncedYear, category, sortOrder]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-gray-900 pt-14 sm:pt-20 pb-12">
+    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-gray-900 pt-12 sm:pt-16 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <motion.div

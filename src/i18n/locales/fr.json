@@ -4,7 +4,8 @@
     "history": "Historique",
     "trends": "Tendances",
     "pool": "Bassin",
-    "noc": "Recherche CNP"
+    "noc": "Recherche CNP",
+    "calculator": "Calculateur CRS"
   },
   "home": {
     "title": "Résultats du Dernier Tirage",
@@ -64,5 +65,22 @@
     "loading": "Chargement...",
     "error": "Une erreur est survenue",
     "retry": "Réessayer"
+  },
+  "calculator": {
+    "title": "Calculateur CRS",
+    "subtitle": "Calculez votre score du Système de Classement Global",
+    "personalInfo": "Informations Personnelles",
+    "workExperience": "Expérience Professionnelle",
+    "languageProficiency": "Maîtrise des Langues",
+    "additionalFactors": "Facteurs Supplémentaires",
+    "yourScore": "Votre Score CRS",
+    "totalScore": "Score CRS Total",
+    "scoreBreakdown": "Détail du Score",
+    "scoreAnalysis": "Analyse du Score",
+    "fillForm": "Remplissez le formulaire pour calculer votre score CRS",
+    "excellent": "Excellent ! Votre score est compétitif pour les tirages Entrée Express.",
+    "good": "Bon score, mais vous pourriez vouloir améliorer votre profil.",
+    "improve": "Envisagez d'améliorer votre score grâce à des facteurs supplémentaires.",
+    "tip": "Conseil : Concentrez-vous sur l'amélioration des compétences linguistiques et l'acquisition d'une expérience professionnelle canadienne pour augmenter votre score."
   }
 } 

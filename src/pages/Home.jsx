@@ -1,8 +1,7 @@
-import { useEffect, useState, useCallback, memo } from "react";
-import axios from "axios";
-import { BASE_URL } from "../Utils/utils";
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { useLatestDraw } from "../Utils/useOptimizedData";
 import {
   FaHashtag,
   FaCalendarAlt,
@@ -43,26 +42,9 @@ const LoadingSpinner = memo(function LoadingSpinner({ message }) {
 });
 
 export default function Home() {
-  const [latestDraw, setLatestDraw] = useState(null);
-  const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
-
-  const fetchLatestDraw = useCallback(async () => {
-    try {
-      const { data } = await axios.get(`${BASE_URL}/draws/latest`);
-      setLatestDraw(data.draw);
-    } catch (err) {
-      console.error("Error fetching latest draw:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    fetchLatestDraw();
-    return () => controller.abort();
-  }, [fetchLatestDraw]);
+  const { data, loading } = useLatestDraw();
+  const latestDraw = data?.draw;
 
   const statCards = [
     {
@@ -104,7 +86,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-gray-900 pt-14 sm:pt-20 pb-12">
+    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-gray-900 pt-12 sm:pt-16 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <motion.div
