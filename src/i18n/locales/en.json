@@ -21,7 +21,25 @@
   },
   "history": {
     "title": "Draw History",
-    "subtitle": "Explore past Express Entry draws"
+    "subtitle": "Explore all Express Entry draws with detailed information and filtering options",
+    "filterTitle": "Filter Draws",
+    "year": "Year",
+    "category": "Category",
+    "allCategories": "All Categories",
+    "sortBy": "Sort By",
+    "newestFirst": "Newest First",
+    "oldestFirst": "Oldest First",
+    "clear": "Clear",
+    "clearFilters": "Clear Filters",
+    "showing": "Showing",
+    "of": "of",
+    "draws": "draws",
+    "noDrawsFound": "No draws found",
+    "tryAdjustingFilters": "Try adjusting your filters to see more results",
+    "first": "First",
+    "previous": "Previous",
+    "next": "Next",
+    "last": "Last"
   },
   "trends": {
     "title": "Invitations Trends",
@@ -69,7 +87,7 @@
   },
   "calculator": {
     "title": "CRS Calculator",
-    "subtitle": "Calculate your Comprehensive Ranking System score",
+    "subtitle": "Calculate your Comprehensive Ranking System score with the latest policies",
     "personalInfo": "Personal Information",
     "workExperience": "Work Experience",
     "languageProficiency": "Language Proficiency",
@@ -82,6 +100,8 @@
     "excellent": "Excellent! Your score is competitive for Express Entry draws.",
     "good": "Good score, but you may want to improve your profile.",
     "improve": "Consider improving your score through additional factors.",
-    "tip": "Tip: Focus on improving language skills and gaining Canadian work experience to boost your score."
+    "tip": "Tip: Focus on improving language skills and gaining Canadian work experience to boost your score.",
+    "policyUpdate": "Policy Update",
+    "policyUpdateText": "As of March 25, 2025, job offer points have been removed from the CRS system. This calculator reflects the latest changes."
   }
 }

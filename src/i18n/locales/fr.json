@@ -20,7 +20,25 @@
   },
   "history": {
     "title": "Historique des Tirages",
-    "subtitle": "Explorez les tirages Entrée Express passés"
+    "subtitle": "Explorez tous les tirages d'Entrée Express avec des informations détaillées et des options de filtrage",
+    "filterTitle": "Filtrer les Tirages",
+    "year": "Année",
+    "category": "Catégorie",
+    "allCategories": "Toutes les Catégories",
+    "sortBy": "Trier Par",
+    "newestFirst": "Plus Récent en Premier",
+    "oldestFirst": "Plus Ancien en Premier",
+    "clear": "Effacer",
+    "clearFilters": "Effacer les Filtres",
+    "showing": "Affichage de",
+    "of": "sur",
+    "draws": "tirages",
+    "noDrawsFound": "Aucun tirage trouvé",
+    "tryAdjustingFilters": "Essayez d'ajuster vos filtres pour voir plus de résultats",
+    "first": "Premier",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "last": "Dernier"
   },
   "trends": {
     "title": "Tendances des Invitations",
@@ -68,7 +86,7 @@
   },
   "calculator": {
     "title": "Calculateur CRS",
-    "subtitle": "Calculez votre score du Système de Classement Global",
+    "subtitle": "Calculez votre score du Système de Classement Global avec les dernières politiques",
     "personalInfo": "Informations Personnelles",
     "workExperience": "Expérience Professionnelle",
     "languageProficiency": "Maîtrise des Langues",
@@ -81,6 +99,8 @@
     "excellent": "Excellent ! Votre score est compétitif pour les tirages Entrée Express.",
     "good": "Bon score, mais vous pourriez vouloir améliorer votre profil.",
     "improve": "Envisagez d'améliorer votre score grâce à des facteurs supplémentaires.",
-    "tip": "Conseil : Concentrez-vous sur l'amélioration des compétences linguistiques et l'acquisition d'une expérience professionnelle canadienne pour augmenter votre score."
+    "tip": "Conseil : Concentrez-vous sur l'amélioration des compétences linguistiques et l'acquisition d'une expérience professionnelle canadienne pour augmenter votre score.",
+    "policyUpdate": "Mise à Jour de la Politique",
+    "policyUpdateText": "À partir du 25 mars 2025, les points d'offre d'emploi ont été supprimés du système CRS. Ce calculateur reflète les derniers changements."
   }
 } 

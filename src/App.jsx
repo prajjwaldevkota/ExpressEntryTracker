@@ -49,21 +49,21 @@ const NavItem = memo(function NavItem({
 }) {
   return (
     <motion.div
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.2 }}
     >
       <Link
         to={path}
         onClick={onClick}
-        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors duration-300 ${
+        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 text-sm font-medium ${
           isActive
-            ? "bg-white/10 text-white"
-            : "text-white/70 hover:text-white hover:bg-white/5"
+            ? "bg-blue-600 text-white shadow-lg"
+            : "text-gray-300 hover:text-white hover:bg-gray-800/50"
         }`}
       >
         {Icon && <Icon className="w-4 h-4" />}
-        <span className="font-medium text-sm">{label}</span>
+        <span className="whitespace-nowrap">{label}</span>
       </Link>
     </motion.div>
   );
@@ -88,10 +88,10 @@ const MobileMenu = memo(function MobileMenu({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.2 }}
-                  style={{ willChange: "transform, opacity" }}
-        className="fixed top-[2.5rem] sm:top-16 left-0 w-full bg-gray-900/95 backdrop-blur-xl border-b border-white/20 z-40 md:hidden"
+          style={{ willChange: "transform, opacity" }}
+          className="fixed top-[2.5rem] sm:top-16 left-0 w-full bg-gray-900/95 backdrop-blur-xl border-b border-gray-700/50 z-40 md:hidden"
         >
-                      <div className="max-w-7xl mx-auto px-4 py-2">
+          <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex flex-col space-y-2">
               {navItems.map((item) => (
                 <NavItem
@@ -158,27 +158,27 @@ const Navigation = memo(function Navigation() {
 
   return (
     <div style={{ minHeight: `${viewportHeight}px` }}>
-      <nav className="fixed top-0 left-0 w-full z-50 bg-gray-900/95 backdrop-blur-xl border-b border-white/20 px-3 sm:px-4 py-2 shadow-lg">
+      <nav className="fixed top-0 left-0 w-full z-50 bg-gray-900/95 backdrop-blur-xl border-b border-gray-700/50 px-4 py-3 shadow-lg">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-3">
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white font-extrabold text-base sm:text-lg shadow-lg"
+              className="w-9 h-9 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center text-white font-extrabold text-lg shadow-lg"
             >
               <span className="tracking-tight">EE</span>
             </motion.div>
             <Link
               to="/"
-              className="text-base sm:text-lg md:text-xl font-extrabold bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent drop-shadow-lg tracking-tight"
+              className="text-lg md:text-xl font-extrabold bg-gradient-to-r from-white via-blue-100 to-blue-200 bg-clip-text text-transparent drop-shadow-lg tracking-tight"
             >
               Express Entry <span className="text-blue-400">Tracker</span>
             </Link>
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
+          <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
             {navItems.map((item) => (
               <NavItem
                 key={item.path}
@@ -195,7 +195,7 @@ const Navigation = memo(function Navigation() {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={toggleMobileMenu}
-              className="text-white/90 hover:text-white transition-colors duration-300 p-1"
+              className="text-gray-300 hover:text-white transition-colors duration-300 p-2 rounded-lg hover:bg-gray-800/50"
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMobileMenuOpen}
             >
@@ -212,7 +212,7 @@ const Navigation = memo(function Navigation() {
         currentPath={location.pathname}
       />
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-zinc-800 to-gray-800 transition-colors duration-300 mt-1">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 transition-colors duration-300 mt-1">
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
             <Route path="/" element={<Home />} />
