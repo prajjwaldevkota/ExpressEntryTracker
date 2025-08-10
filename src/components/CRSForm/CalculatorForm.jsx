@@ -12,7 +12,7 @@ const CalculatorForm = memo(function CalculatorForm({
   hasSpouse,
 }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <PersonalInfoSection formData={formData} handleInputChange={handleInputChange} />
       
       {hasSpouse && (

@@ -7,7 +7,9 @@ const LanguageSwitcher = memo(function LanguageSwitcher() {
 
   const toggleLanguage = useCallback(() => {
     const newLang = i18n.language === "en" ? "fr" : "en";
+    console.log(`[LanguageSwitcher] Switching language from ${i18n.language} to ${newLang}`);
     i18n.changeLanguage(newLang);
+    console.log(`[LanguageSwitcher] Language changed to: ${i18n.language}`);
   }, [i18n]);
 
   const buttonText = useMemo(

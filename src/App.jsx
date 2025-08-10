@@ -89,7 +89,7 @@ const MobileMenu = memo(function MobileMenu({
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.2 }}
           style={{ willChange: "transform, opacity" }}
-          className="fixed top-[2.5rem] sm:top-16 left-0 w-full bg-gray-900/95 backdrop-blur-xl border-b border-gray-700/50 z-40 md:hidden"
+          className="fixed top-[2rem] sm:top-16 left-0 w-full bg-gray-900/95 backdrop-blur-xl border-b border-gray-700/50 z-40 md:hidden"
         >
           <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex flex-col space-y-2">
@@ -158,20 +158,20 @@ const Navigation = memo(function Navigation() {
 
   return (
     <div style={{ minHeight: `${viewportHeight}px` }}>
-      <nav className="fixed top-0 left-0 w-full z-50 bg-gray-900/95 backdrop-blur-xl border-b border-gray-700/50 px-4 py-3 shadow-lg">
+      <nav className="fixed top-0 left-0 w-full z-50 bg-gray-900/95 backdrop-blur-xl border-b border-gray-700/50 px-3 sm:px-4 py-2 sm:py-3 shadow-lg">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="w-9 h-9 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center text-white font-extrabold text-lg shadow-lg"
+              className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center text-white font-extrabold text-base sm:text-lg shadow-lg"
             >
               <span className="tracking-tight">EE</span>
             </motion.div>
             <Link
               to="/"
-              className="text-lg md:text-xl font-extrabold bg-gradient-to-r from-white via-blue-100 to-blue-200 bg-clip-text text-transparent drop-shadow-lg tracking-tight"
+              className="text-base sm:text-lg md:text-xl font-extrabold bg-gradient-to-r from-white via-blue-100 to-blue-200 bg-clip-text text-transparent drop-shadow-lg tracking-tight"
             >
               Express Entry <span className="text-blue-400">Tracker</span>
             </Link>
@@ -212,7 +212,7 @@ const Navigation = memo(function Navigation() {
         currentPath={location.pathname}
       />
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 transition-colors duration-300 mt-1">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 transition-colors duration-300 mt-10 sm:mt-15">
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
             <Route path="/" element={<Home />} />

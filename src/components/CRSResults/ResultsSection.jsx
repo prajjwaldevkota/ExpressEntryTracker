@@ -19,11 +19,11 @@ const ResultsSection = memo(function ResultsSection({
 }) {
   if (!calculatedScore) {
     return (
-      <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-2xl">
-        <h2 className="text-2xl font-bold text-white mb-6">Your CRS Score</h2>
-        <div className="text-center py-12">
-          <FaCalculator className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-          <p className="text-slate-400 text-lg">
+      <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl shadow-2xl">
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Your CRS Score</h2>
+        <div className="text-center py-8 sm:py-12">
+          <FaCalculator className="w-12 h-12 sm:w-16 sm:h-16 text-slate-400 mx-auto mb-3 sm:mb-4" />
+          <p className="text-slate-400 text-base sm:text-lg">
             Fill in the required fields to calculate your CRS score
           </p>
         </div>
@@ -32,21 +32,21 @@ const ResultsSection = memo(function ResultsSection({
   }
 
   return (
-    <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-2xl">
-      <h2 className="text-2xl font-bold text-white mb-6">Your CRS Score</h2>
+    <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl shadow-2xl">
+      <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Your CRS Score</h2>
 
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mb-4">
-            <FaTrophy className="w-12 h-12 text-white" />
+          <div className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mb-3 sm:mb-4">
+            <FaTrophy className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
           </div>
-          <h3 className="text-5xl font-bold text-white mb-2">
+          <h3 className="text-4xl sm:text-5xl font-bold text-white mb-2">
             {calculatedScore.totalScore}
           </h3>
-          <p className="text-slate-400">Total CRS Score (Max: 1,200)</p>
+          <p className="text-slate-400 text-sm sm:text-base">Total CRS Score (Max: 1,200)</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <ScoreCard
             title="Age"
             score={calculatedScore.scores.age}
@@ -96,8 +96,8 @@ const ResultsSection = memo(function ResultsSection({
         {/* Language Skills Detailed Breakdown */}
         {(calculatedScore.scores.englishBreakdown ||
           calculatedScore.scores.frenchBreakdown) && (
-          <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 p-6 rounded-2xl border border-blue-500/20">
-            <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-blue-500/20">
+            <h4 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4 flex items-center gap-2">
               <FaLanguage className="text-blue-400" />
               Language Skills Breakdown
             </h4>

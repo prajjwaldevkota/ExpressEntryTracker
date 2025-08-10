@@ -8,7 +8,7 @@ const CalculatorResults = memo(function CalculatorResults({
   hasSpouse,
 }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <ResultsSection
         calculatedScore={calculatedScore}
         formData={formData}

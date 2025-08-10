@@ -17,9 +17,28 @@ export const useOptimizedData = (endpoint, params = {}, includeLanguage = false)
         // Add language parameter if needed
         const requestParams = { ...params };
         if (includeLanguage) {
-          const lang = localStorage.getItem('i18nextLng') || 'en';
+          // Check all possible language keys
+          console.log(`[useOptimizedData] All localStorage language keys:`, {
+            'i18nextLng': localStorage.getItem('i18nextLng'),
+            'i18next': localStorage.getItem('i18next'),
+            'language': localStorage.getItem('language'),
+            'lang': localStorage.getItem('lang')
+          });
+          
+          // Try to get language from localStorage first, then fallback to 'en'
+          let lang = localStorage.getItem('i18nextLng');
+          if (!lang) {
+            lang = 'en';
+            console.log(`[useOptimizedData] No language found in localStorage, using fallback: ${lang}`);
+          }
+          
+          console.log(`[useOptimizedData] localStorage key 'i18nextLng': ${localStorage.getItem('i18nextLng')}`);
+          console.log(`[useOptimizedData] Using language: ${lang} for endpoint: ${endpoint}`);
           requestParams.lang = lang;
+          console.log(`[useOptimizedData] Adding language parameter: ${lang} for endpoint: ${endpoint}`);
         }
+        
+        console.log(`[useOptimizedData] Making request to: ${BASE_URL}${endpoint} with params:`, requestParams);
         
         const response = await axios.get(`${BASE_URL}${endpoint}`, {
           params: requestParams,
@@ -44,9 +63,22 @@ export const useOptimizedData = (endpoint, params = {}, includeLanguage = false)
     // Add language parameter if needed
     const requestParams = { ...params };
     if (includeLanguage) {
+      // Check all possible language keys
+      console.log(`[useOptimizedData] Refetch - All localStorage language keys:`, {
+        'i18nextLng': localStorage.getItem('i18nextLng'),
+        'i18next': localStorage.getItem('i18next'),
+        'language': localStorage.getItem('language'),
+        'lang': localStorage.getItem('lang')
+      });
+      
       const lang = localStorage.getItem('i18nextLng') || 'en';
+      console.log(`[useOptimizedData] Refetch - localStorage key 'i18nextLng': ${localStorage.getItem('i18nextLng')}`);
+      console.log(`[useOptimizedData] Refetch - Using language: ${lang} for endpoint: ${endpoint}`);
       requestParams.lang = lang;
+      console.log(`[useOptimizedData] Refetch - Adding language parameter: ${lang} for endpoint: ${endpoint}`);
     }
+    
+    console.log(`[useOptimizedData] Refetch - Making request to: ${BASE_URL}${endpoint} with params:`, requestParams);
     
     axios.get(`${BASE_URL}${endpoint}`, {
       params: requestParams,
