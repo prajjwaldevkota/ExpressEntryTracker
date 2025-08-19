@@ -8,13 +8,13 @@ const PersonalInfoSection = memo(function PersonalInfoSection({
   handleInputChange,
 }) {
   return (
-    <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl shadow-2xl">
-      <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
-        <FaUser className="text-blue-400" />
-        Personal Information
+    <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 p-6 lg:p-8 rounded-2xl shadow-xl">
+      <h2 className="text-xl lg:text-2xl font-bold text-white mb-6 flex items-center gap-3">
+        <FaUser className="text-emerald-400 flex-shrink-0" />
+        <span className="leading-tight">Personal Information</span>
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 gap-6">
         <FormField
           label="Age"
           type="number"

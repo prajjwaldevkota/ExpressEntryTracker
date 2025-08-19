@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, memo } from "react";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { NOC_URL } from "../Utils/utils";
-import { useTranslation } from "react-i18next";
 import {
   Search,
   ChevronLeft,
@@ -19,6 +19,7 @@ import {
   BookOpen,
   TrendingUp,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 // Simplified debounce hook
 function useDebounce(value, delay) {
@@ -30,20 +31,20 @@ function useDebounce(value, delay) {
   return debouncedValue;
 }
 
-// Clean, modern NOC Card
+// Modern NOC Card component
 const NocCard = memo(function NocCard({ noc, index }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const getTeerColor = (teer) => {
     const colors = {
-      "TEER 0": "bg-emerald-500",
-      "TEER 1": "bg-blue-500",
-      "TEER 2": "bg-purple-500",
-      "TEER 3": "bg-pink-500",
-      "TEER 4": "bg-orange-500",
-      "TEER 5": "bg-red-500",
+      "TEER 0": "from-emerald-500 to-emerald-600",
+      "TEER 1": "from-blue-500 to-blue-600",
+      "TEER 2": "from-purple-500 to-purple-600",
+      "TEER 3": "from-amber-500 to-amber-600",
+      "TEER 4": "from-orange-500 to-orange-600",
+      "TEER 5": "from-red-500 to-red-600",
     };
-    return colors[teer] || "bg-slate-500";
+    return colors[teer] || "from-slate-500 to-slate-600";
   };
 
   const truncateText = (text, maxLength = 120) => {
@@ -54,29 +55,29 @@ const NocCard = memo(function NocCard({ noc, index }) {
   };
 
   return (
-    <div
-      className="group bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border border-slate-200 hover:border-slate-300"
-      style={{
-        animationDelay: `${index * 0.1}s`,
-        animationFillMode: "backwards",
-      }}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      whileHover={{ y: -4, scale: 1.02 }}
+      className="group bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
     >
       {/* Header */}
       <div className="p-6 pb-4">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="flex items-center gap-3">
             <div
-              className={`w-10 h-10 ${
-                noc.teer ? getTeerColor(noc.teer.title) : "bg-slate-400"
-              } rounded-lg flex items-center justify-center text-white font-semibold text-sm`}
+              className={`w-12 h-12 bg-gradient-to-br ${
+                noc.teer ? getTeerColor(noc.teer.title) : "from-slate-500 to-slate-600"
+              } rounded-xl flex items-center justify-center text-white font-semibold text-sm shadow-lg`}
             >
               {noc.noc_code.slice(0, 2)}
             </div>
             <div>
-              <div className="text-sm font-medium text-slate-500 mb-1">
+              <div className="text-sm font-medium text-slate-400 mb-1">
                 NOC {noc.noc_code}
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 leading-tight">
+              <h3 className="text-lg font-semibold text-white leading-tight">
                 {noc.title}
               </h3>
             </div>
@@ -87,7 +88,7 @@ const NocCard = memo(function NocCard({ noc, index }) {
               href={noc.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 text-sm font-medium rounded-lg transition-colors duration-200"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-sm font-medium rounded-lg transition-colors duration-200 border border-emerald-500/30"
             >
               <span className="hidden sm:inline">View</span>
               <ExternalLink size={14} />
@@ -98,199 +99,210 @@ const NocCard = memo(function NocCard({ noc, index }) {
         {/* TEER Badge */}
         {noc.teer && (
           <div className="flex items-center gap-2 mb-4">
-            <div
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 ${getTeerColor(
-                noc.teer.title
-              )} text-white text-xs font-medium rounded-full`}
-            >
-              <Award size={12} />
+            <div className={`px-3 py-1 bg-gradient-to-r ${getTeerColor(noc.teer.title)} text-white text-xs font-semibold rounded-lg shadow-lg`}>
               {noc.teer.title}
             </div>
-            <span className="text-xs text-slate-500">Skill Level</span>
+            <span className="text-sm text-slate-400">
+              {noc.teer.description}
+            </span>
           </div>
         )}
 
         {/* Description */}
-        <div className="mb-4">
-          <p className="text-slate-600 text-sm leading-relaxed">
-            {isExpanded ? noc.description : truncateText(noc.description)}
-          </p>
-          {noc.description && noc.description.length > 120 && (
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="text-blue-600 hover:text-blue-700 text-sm font-medium mt-2 transition-colors"
-            >
-              {isExpanded ? "Show less" : "Read more"}
-            </button>
-          )}
-        </div>
+        <p className="text-slate-300 text-sm leading-relaxed mb-4">
+          {isExpanded ? noc.description : truncateText(noc.description)}
+        </p>
+
+        {/* Expand/Collapse Button */}
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="text-emerald-400 hover:text-emerald-300 text-sm font-medium transition-colors duration-200"
+        >
+          {isExpanded ? "Show less" : "Show more"}
+        </button>
       </div>
 
-      {/* Hierarchy Section */}
-      {noc.hierarchy && (
-        <div className="px-6 pb-6">
-          <div className="bg-slate-50 rounded-xl p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Grid3X3 size={16} className="text-slate-500" />
-              <span className="text-sm font-medium text-slate-700">
-                Classification
-              </span>
-            </div>
-
-            <div className="space-y-2">
-              {noc.hierarchy.broad_group?.title && (
-                <div className="flex items-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
-                  <span className="text-slate-600">
-                    {noc.hierarchy.broad_group.title}
-                  </span>
-                </div>
-              )}
-              {noc.hierarchy.major_group?.title && (
-                <div className="flex items-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                  <span className="text-slate-600">
-                    {noc.hierarchy.major_group.title}
-                  </span>
-                </div>
-              )}
-              {noc.hierarchy.minor_group?.title && (
-                <div className="flex items-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                  <span className="text-slate-600">
-                    {noc.hierarchy.minor_group.title}
-                  </span>
-                </div>
-              )}
-            </div>
+      {/* Footer */}
+      <div className="px-6 pb-6">
+        <div className="flex items-center justify-between text-xs text-slate-400">
+          <div className="flex items-center gap-2">
+            <Briefcase size={14} />
+            <span>Job Classification</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Target size={14} />
+            <span>Express Entry</span>
           </div>
         </div>
+      </div>
+    </motion.div>
+  );
+});
+
+// Modern SearchBar component
+const SearchBar = memo(function SearchBar({ searchTerm, setSearchTerm, placeholder }) {
+  return (
+    <div className="relative max-w-2xl mx-auto mb-8">
+      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+        <Search className="h-5 w-5 text-slate-400" />
+      </div>
+      <input
+        type="text"
+        placeholder={placeholder}
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="block w-full pl-12 pr-4 py-4 border border-slate-600/50 rounded-2xl bg-slate-800/60 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all shadow-lg"
+      />
+      {searchTerm && (
+        <button
+          onClick={() => setSearchTerm("")}
+          className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-300 transition-colors duration-200"
+        >
+          <X size={20} />
+        </button>
       )}
     </div>
   );
 });
 
-// Clean loading skeleton
-const LoadingSkeleton = memo(function LoadingSkeleton() {
+// Modern Pagination component
+const Pagination = memo(function Pagination({ currentPage, totalPages, onPageChange }) {
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisible = 5;
+    
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push("...");
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push("...");
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+        pages.push("...");
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i);
+        }
+        pages.push("...");
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
+  };
+
   return (
-    <div className="space-y-6">
-      {[...Array(6)].map((_, index) => (
-        <div
+    <div className="flex items-center justify-center gap-2 mt-8">
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="p-2 rounded-xl bg-slate-800/50 border border-slate-700/50 text-slate-400 hover:text-white hover:bg-slate-700/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+      >
+        <ChevronLeft size={20} />
+      </button>
+      
+      {getPageNumbers().map((page, index) => (
+        <button
           key={index}
-          className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6"
+          onClick={() => typeof page === "number" && onPageChange(page)}
+          disabled={page === "..."}
+          className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
+            page === currentPage
+              ? "bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg"
+              : typeof page === "number"
+              ? "bg-slate-800/50 border border-slate-700/50 text-slate-400 hover:text-white hover:bg-slate-700/50"
+              : "text-slate-500 cursor-default"
+          }`}
         >
-          <div className="flex items-start gap-3 mb-4">
-            <div className="w-10 h-10 bg-slate-200 rounded-lg animate-pulse"></div>
-            <div className="flex-1 space-y-2">
-              <div className="h-4 bg-slate-200 rounded w-20 animate-pulse"></div>
-              <div className="h-5 bg-slate-200 rounded w-3/4 animate-pulse"></div>
-            </div>
-            <div className="h-8 w-16 bg-slate-200 rounded-lg animate-pulse"></div>
-          </div>
-          <div className="h-4 bg-slate-200 rounded w-16 mb-4 animate-pulse"></div>
-          <div className="space-y-2">
-            <div className="h-4 bg-slate-200 rounded w-full animate-pulse"></div>
-            <div className="h-4 bg-slate-200 rounded w-5/6 animate-pulse"></div>
-          </div>
-        </div>
+          {page}
+        </button>
       ))}
+      
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="p-2 rounded-xl bg-slate-800/50 border border-slate-700/50 text-slate-400 hover:text-white hover:bg-slate-700/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+      >
+        <ChevronRight size={20} />
+      </button>
     </div>
   );
 });
 
-// Simplified search input
-const SearchInput = memo(function SearchInput({ value, onChange, onClear }) {
+// Modern LoadingSpinner component
+const LoadingSpinner = memo(function LoadingSpinner() {
   return (
-    <div className="relative">
+    <div className="flex items-center justify-center py-20">
       <div className="relative">
-        <Search
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"
-          size={20}
-        />
-        <input
-          type="text"
-          placeholder="Search occupations, skills, or NOC codes..."
-          value={value}
-          onChange={onChange}
-          className="w-full pl-12 pr-12 py-4 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-base shadow-sm"
-        />
-        {value && (
-          <button
-            onClick={onClear}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
-          >
-            <X size={18} />
-          </button>
-        )}
+        <div className="w-20 h-20 border-4 border-slate-700 rounded-full animate-spin"></div>
+        <div className="absolute top-0 left-0 w-20 h-20 border-4 border-transparent border-t-emerald-500 border-r-blue-500 rounded-full animate-spin"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
       </div>
     </div>
   );
 });
 
-// Clean scroll to top button
-const ScrollToTop = memo(function ScrollToTop() {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const toggleVisibility = () => {
-      setIsVisible(window.pageYOffset > 300);
-    };
-    window.addEventListener("scroll", toggleVisibility);
-    return () => window.removeEventListener("scroll", toggleVisibility);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  return (
-    <button
-      onClick={scrollToTop}
-      className={`fixed bottom-6 right-6 z-50 w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center ${
-        isVisible ? "opacity-100 scale-100" : "opacity-0 scale-0"
-      }`}
-    >
-      <ArrowUp size={20} />
-    </button>
-  );
-});
-
-export default function NocSearch() {
-  // State management
-  const [searchTerm, setSearchTerm] = useState("");
-  const [nocData, setNocData] = useState([]);
-  const [page, setPage] = useState(1);
-  const limit = 12;
-  const [totalEntries, setTotalEntries] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+export default function NOC() {
   const { t } = useTranslation();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [nocData, setNocData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [error, setError] = useState(null);
+  const itemsPerPage = 12;
 
-  // API fetch
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+  // Fetch NOC data from API
   useEffect(() => {
-    const controller = new AbortController();
     const fetchNocData = async () => {
       setLoading(true);
-      setError("");
+      setError(null);
       try {
         const response = await axios.get(`${NOC_URL}/api/nocs`, {
           params: {
             search: debouncedSearchTerm || undefined,
-            page: page,
-            limit: limit,
+            page: currentPage,
+            limit: itemsPerPage,
           },
-          signal: controller.signal,
+          timeout: 10000,
         });
-        setNocData(response.data.data);
-        setTotalEntries(response.data.pagination.total);
+        
+        if (response.data && response.data.data) {
+          if (currentPage === 1) {
+            setNocData(response.data.data);
+            setFilteredData(response.data.data);
+          } else {
+            setNocData(prev => [...prev, ...response.data.data]);
+            setFilteredData(prev => [...prev, ...response.data.data]);
+          }
+          setTotalPages(Math.ceil(response.data.pagination?.total / itemsPerPage) || 1);
+        } else {
+          if (currentPage === 1) {
+            setNocData([]);
+            setFilteredData([]);
+          }
+          setTotalPages(1);
+        }
       } catch (err) {
-        if (!axios.isCancel(err)) {
-          setError(
-            err.response?.status === 404
-              ? "No results found. Try different search terms."
-              : "Something went wrong. Please try again."
-          );
+        console.error('Error fetching NOC data:', err);
+        setError(err.message || 'Failed to fetch NOC data');
+        if (currentPage === 1) {
+          setNocData([]);
+          setFilteredData([]);
         }
       } finally {
         setLoading(false);
@@ -298,270 +310,157 @@ export default function NocSearch() {
     };
 
     fetchNocData();
-    return () => controller.abort();
-  }, [debouncedSearchTerm, page]);
+  }, [debouncedSearchTerm, currentPage]);
 
-  const totalPages = Math.ceil(totalEntries / limit);
-
-  // Event handlers
-  const handleSearchChange = useCallback((e) => {
-    setSearchTerm(e.target.value);
-    setPage(1);
-  }, []);
-
-  const handleSearchClear = useCallback(() => {
-    setSearchTerm("");
-    setPage(1);
-  }, []);
-
-  // Search debouncing
+  // Filter data based on search term
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
+    if (!debouncedSearchTerm.trim()) {
+      setFilteredData(nocData);
+      return;
+    }
+
+    const filtered = nocData.filter(noc =>
+      noc.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+      noc.noc_code.includes(debouncedSearchTerm) ||
+      (noc.description && noc.description.toLowerCase().includes(debouncedSearchTerm.toLowerCase()))
+    );
+
+    setFilteredData(filtered);
+  }, [debouncedSearchTerm, nocData]);
+
+  const handlePageChange = useCallback((page) => {
+    setCurrentPage(page);
+    // Reset data when changing pages to avoid duplicates
+    if (page === 1) {
+      setNocData([]);
+      setFilteredData([]);
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12">
-        {/* Clean Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-6 shadow-lg">
-            <Briefcase className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-4">
-            NOC Explorer
-          </h1>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-6">
-            Discover Canadian occupations with our comprehensive National
-            Occupational Classification database
-          </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-slate-500">
-            <div className="flex items-center gap-2">
-              <MapPin size={16} />
-              <span>Canada</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock size={16} />
-              <span>Updated 2024</span>
-            </div>
-          </div>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pb-8">
+      <div className="relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header Section */}
+          <motion.div
+            initial={{ opacity: 0, y: -40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="text-center mb-12 lg:mb-16 pt-8"
+          >
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 200 }}
+              className="inline-flex items-center justify-center w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-emerald-500 via-blue-600 to-purple-600 rounded-3xl mb-6 lg:mb-8 shadow-2xl shadow-emerald-500/25 relative"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-3xl"></div>
+              <Briefcase className="w-10 h-10 lg:w-12 lg:h-12 text-white relative z-10" />
+            </motion.div>
 
-        {/* Search Section */}
-        <div className="max-w-2xl mx-auto mb-8">
-          <SearchInput
-            value={searchTerm}
-            onChange={handleSearchChange}
-            onClear={handleSearchClear}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-4xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-white via-emerald-100 to-blue-200 bg-clip-text text-transparent mb-6 tracking-tight"
+            >
+              {t("noc.title")}
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="text-lg lg:text-xl text-slate-300 font-medium max-w-4xl mx-auto leading-relaxed px-4"
+            >
+              {t("noc.subtitle")}
+            </motion.p>
+
+            {/* Decorative line */}
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: "120px" }}
+              transition={{ duration: 1, delay: 0.8 }}
+              className="h-1 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full mx-auto mt-8"
+            />
+          </motion.div>
+
+          {/* Search Bar */}
+          <SearchBar
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            placeholder="Search NOC codes, job titles, or descriptions..."
           />
-        </div>
 
-        {/* Stats Bar */}
-        {!loading && nocData.length > 0 && (
-          <div className="bg-white rounded-xl border border-slate-200 p-6 mb-8 shadow-sm">
-            <div className="flex flex-wrap justify-center gap-8 text-center">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Target className="w-5 h-5 text-blue-600" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-slate-900">
-                    {totalEntries.toLocaleString()}
-                  </div>
-                  <div className="text-sm text-slate-500">
-                    Occupations Found
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-purple-600" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-slate-900">
-                    {page} / {totalPages}
-                  </div>
-                  <div className="text-sm text-slate-500">Current Page</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+          {/* Results Count */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="text-center mb-8"
+          >
+            <p className="text-slate-400 text-lg">
+              Found <span className="text-emerald-400 font-semibold">{filteredData.length}</span> NOC codes
+            </p>
+          </motion.div>
 
-        {/* Loading State */}
-        {loading && (
-          <div className="text-center py-12">
-            <div className="inline-flex items-center justify-center w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
-            <p className="text-slate-600 text-lg">Searching occupations...</p>
-            <div className="mt-8">
-              <LoadingSkeleton />
-            </div>
-          </div>
-        )}
-
-        {/* Error State */}
-        {error && (
-          <div className="max-w-md mx-auto">
-            <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
-              <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <X className="w-6 h-6 text-red-600" />
+          {/* Error State */}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-16"
+            >
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-red-500/20 rounded-2xl mb-4">
+                <Briefcase className="w-8 h-8 text-red-400" />
               </div>
-              <h3 className="text-lg font-semibold text-red-900 mb-2">
-                Something went wrong
-              </h3>
-              <p className="text-red-700 mb-4">{error}</p>
-              <button
-                onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
+              <p className="text-red-400 text-xl font-medium mb-4">Error loading data</p>
+              <p className="text-slate-500 text-base">{error}</p>
+            </motion.div>
+          )}
+
+          {/* NOC Grid */}
+          {loading ? (
+            <LoadingSpinner />
+          ) : filteredData.length > 0 ? (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
               >
-                Try Again
-              </button>
-            </div>
-          </div>
-        )}
+                {filteredData.map((noc, index) => (
+                  <NocCard key={noc.noc_code} noc={noc} index={index} />
+                ))}
+              </motion.div>
 
-        {/* No Results */}
-        {!loading && !error && nocData.length === 0 && debouncedSearchTerm && (
-          <div className="max-w-md mx-auto">
-            <div className="bg-white border border-slate-200 rounded-xl p-8 text-center shadow-sm">
-              <div className="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Search className="w-6 h-6 text-slate-500" />
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              )}
+            </>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="text-center py-16"
+            >
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-700/50 rounded-2xl mb-4">
+                <Briefcase className="w-8 h-8 text-slate-400" />
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                No Results Found
-              </h3>
-              <p className="text-slate-600 mb-6">
-                We couldn't find any occupations matching{" "}
-                <span className="font-semibold text-slate-900">
-                  "{debouncedSearchTerm}"
-                </span>
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <button
-                  onClick={handleSearchClear}
-                  className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Clear Search
-                </button>
-                <button
-                  onClick={() => setSearchTerm("software")}
-                  className="px-4 py-2 bg-slate-100 text-slate-700 font-medium rounded-lg hover:bg-slate-200 transition-colors"
-                >
-                  Try "Software"
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Results Grid */}
-        {!loading && !error && nocData.length > 0 && (
-          <div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              {nocData.map((noc, index) => (
-                <NocCard key={noc.noc_code} noc={noc} index={index} />
-              ))}
-            </div>
-
-            {/* Clean Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2">
-                <button
-                  onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={page === 1}
-                  className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-lg text-slate-700 font-medium hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronLeft size={16} />
-                  <span className="hidden sm:inline">Previous</span>
-                </button>
-
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let pageNum;
-                    if (totalPages <= 5) {
-                      pageNum = i + 1;
-                    } else if (page <= 3) {
-                      pageNum = i + 1;
-                    } else if (page >= totalPages - 2) {
-                      pageNum = totalPages - 4 + i;
-                    } else {
-                      pageNum = page - 2 + i;
-                    }
-
-                    return (
-                      <button
-                        key={pageNum}
-                        onClick={() => setPage(pageNum)}
-                        className={`w-10 h-10 rounded-lg font-medium transition-colors ${
-                          page === pageNum
-                            ? "bg-blue-600 text-white"
-                            : "bg-white border border-slate-300 text-slate-700 hover:bg-slate-50"
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <button
-                  onClick={() =>
-                    setPage((prev) => (prev < totalPages ? prev + 1 : prev))
-                  }
-                  disabled={page === totalPages}
-                  className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-lg text-slate-700 font-medium hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <span className="hidden sm:inline">Next</span>
-                  <ChevronRight size={16} />
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Welcome State */}
-        {!loading && !error && nocData.length === 0 && !debouncedSearchTerm && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <div className="bg-white border border-slate-200 rounded-xl p-6 text-center shadow-sm">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Target className="w-6 h-6 text-blue-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                500+ NOC Codes
-              </h3>
-              <p className="text-slate-600 text-sm">
-                Comprehensive occupation database
-              </p>
-            </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-6 text-center shadow-sm">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <TrendingUp className="w-6 h-6 text-purple-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                6 TEER Levels
-              </h3>
-              <p className="text-slate-600 text-sm">
-                Training, Education, Experience levels
-              </p>
-            </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-6 text-center shadow-sm">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Users className="w-6 h-6 text-green-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                Updated 2024
-              </h3>
-              <p className="text-slate-600 text-sm">
-                Latest Canadian standards
-              </p>
-            </div>
-          </div>
-        )}
+              <p className="text-slate-400 text-xl font-medium mb-4">No NOC codes found</p>
+              <p className="text-slate-500 text-base">Try adjusting your search terms</p>
+            </motion.div>
+          )}
+        </div>
       </div>
-
-      <ScrollToTop />
     </div>
   );
 }

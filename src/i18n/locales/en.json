@@ -39,7 +39,12 @@
     "first": "First",
     "previous": "Previous",
     "next": "Next",
-    "last": "Last"
+    "last": "Last",
+    "searchPlaceholder": "Search draws, categories, or dates...",
+    "resetFilters": "Reset Filters",
+    "loadMore": "Load More",
+    "noResults": "No draws found",
+    "tryDifferentFilters": "Try adjusting your filters to see more results"
   },
   "trends": {
     "title": "Invitations Trends",
@@ -78,7 +83,8 @@
     "viewDetails": "View Details",
     "broadGroup": "Broad Group",
     "majorGroup": "Major Group",
-    "minorGroup": "Minor Group"
+    "minorGroup": "Minor Group",
+    "subtitle": "Discover Canadian occupations with our comprehensive National Occupational Classification database"
   },
   "common": {
     "loading": "Loading...",

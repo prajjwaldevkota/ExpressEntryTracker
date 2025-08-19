@@ -22,7 +22,7 @@ const LanguageSwitcher = memo(function LanguageSwitcher() {
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={toggleLanguage}
-      className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+      className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 text-white rounded-xl text-sm font-medium transition-all duration-300 shadow-lg hover:shadow-xl shadow-emerald-500/25"
       aria-label={`Switch to ${buttonText} language`}
     >
       {buttonText}

@@ -7,77 +7,38 @@ export default function CRSCalculator() {
   const { formData, handleInputChange, calculatedScore, hasSpouse } = useCRSCalculator()
 
   return (
-    <div className="min-h-screen bg-slate-50 relative overflow-hidden">
-      {/* Enhanced background with modern dark gradients */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />
-
-      {/* Subtle background patterns */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-blue-900/10 via-transparent to-transparent" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-purple-900/10 via-transparent to-transparent" />
-
-      {/* Decorative elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-blue-500/5 to-transparent rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-purple-500/5 to-transparent rounded-full blur-3xl" />
-
-      {/* Grid pattern overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.02]"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)
-          `,
-          backgroundSize: "50px 50px",
-        }}
-      />
-
-      <div className="relative z-10 pb-16">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pb-8">
+      <div className="relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Enhanced Header Section */}
-          <div className="pt-8 sm:pt-12 mb-8 sm:mb-12">
+          {/* Header Section - Mobile optimized */}
+          <div className="pt-8 mb-8 lg:mb-12">
             <CalculatorHeader />
           </div>
 
-          {/* Main Content Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
+          {/* Main Content - Mobile first grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
             {/* Calculator Form Section */}
-            <div className="space-y-6">
-              <div className="relative">
-                {/* Subtle glow effect for form container */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-cyan-500/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                <div className="relative bg-white/[0.02] backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
-                  {/* Top accent line */}
-                  <div className="h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
-
-                  <div className="p-6 sm:p-8">
-                    <CalculatorForm formData={formData} handleInputChange={handleInputChange} hasSpouse={hasSpouse} />
-                  </div>
+            <div className="order-2 lg:order-1">
+              <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-xl overflow-hidden">
+                <div className="p-6 lg:p-8">
+                  <CalculatorForm formData={formData} handleInputChange={handleInputChange} hasSpouse={hasSpouse} />
                 </div>
               </div>
             </div>
 
             {/* Results Section */}
-            <div className="space-y-6">
-              <div className="relative">
-                {/* Enhanced glow effect for results */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500/10 via-blue-500/10 to-purple-500/10 rounded-2xl blur-xl opacity-75 transition-opacity duration-500" />
-
-                <div className="relative bg-white/[0.02] backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
-                  {/* Top accent line with different gradient */}
-                  <div className="h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
-
-                  <div className="p-6 sm:p-8">
-                    <CalculatorResults calculatedScore={calculatedScore} formData={formData} hasSpouse={hasSpouse} />
-                  </div>
+            <div className="order-1 lg:order-2 mb-6 lg:mb-0">
+              <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-xl overflow-hidden">
+                <div className="p-6 lg:p-8">
+                  <CalculatorResults calculatedScore={calculatedScore} hasSpouse={hasSpouse} />
                 </div>
               </div>
 
-              {/* Additional Info Card */}
-              <div className="relative">
-                <div className="bg-white/[0.01] backdrop-blur-sm border border-white/5 rounded-xl p-6 shadow-lg">
+              {/* Mobile-optimized Info Card */}
+              <div className="mt-6">
+                <div className="bg-slate-800/30 backdrop-blur-sm border border-slate-700/30 rounded-2xl p-6 shadow-lg">
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
                       <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           strokeLinecap="round"
@@ -87,9 +48,9 @@ export default function CRSCalculator() {
                         />
                       </svg>
                     </div>
-                    <div>
-                      <h3 className="text-sm font-semibold text-white mb-2">About CRS Score</h3>
-                      <p className="text-xs text-slate-400 leading-relaxed">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-base font-semibold text-white mb-2">About CRS Score</h3>
+                      <p className="text-sm text-slate-300 leading-relaxed">
                         The Comprehensive Ranking System (CRS) is used to assess and score your profile for Express
                         Entry. Higher scores increase your chances of receiving an Invitation to Apply (ITA).
                       </p>
@@ -100,13 +61,13 @@ export default function CRSCalculator() {
             </div>
           </div>
 
-          {/* Bottom Section - Tips or Additional Info */}
-          <div className="mt-12 sm:mt-16">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Tip Cards */}
-              <div className="bg-white/[0.01] backdrop-blur-sm border border-white/5 rounded-xl p-6 shadow-lg hover:bg-white/[0.02] transition-colors duration-300">
+          {/* Bottom Section - Mobile optimized tip cards */}
+          <div className="mt-12 lg:mt-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Education Tip */}
+              <div className="bg-slate-800/30 backdrop-blur-sm border border-slate-700/30 rounded-2xl p-6 shadow-lg hover:bg-slate-800/50 hover:border-slate-600/50 transition-colors duration-300">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
                     <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
@@ -118,14 +79,15 @@ export default function CRSCalculator() {
                   </div>
                   <h4 className="text-sm font-semibold text-white">Education</h4>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-sm text-slate-300 leading-relaxed">
                   Higher education levels and Canadian credentials can significantly boost your CRS score.
                 </p>
               </div>
 
-              <div className="bg-white/[0.01] backdrop-blur-sm border border-white/5 rounded-xl p-6 shadow-lg hover:bg-white/[0.02] transition-colors duration-300">
+              {/* Work Experience Tip */}
+              <div className="bg-slate-800/30 backdrop-blur-sm border border-slate-700/30 rounded-2xl p-6 shadow-lg hover:bg-slate-800/50 hover:border-slate-600/50 transition-colors duration-300">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
                     <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
@@ -137,14 +99,15 @@ export default function CRSCalculator() {
                   </div>
                   <h4 className="text-sm font-semibold text-white">Work Experience</h4>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-sm text-slate-300 leading-relaxed">
                   Canadian work experience and skilled work history are key factors in your CRS calculation.
                 </p>
               </div>
 
-              <div className="bg-white/[0.01] backdrop-blur-sm border border-white/5 rounded-xl p-6 shadow-lg hover:bg-white/[0.02] transition-colors duration-300">
+              {/* Language Skills Tip */}
+              <div className="bg-slate-800/30 backdrop-blur-sm border border-slate-700/30 rounded-2xl p-6 shadow-lg hover:bg-slate-800/50 hover:border-slate-600/50 transition-colors duration-300 sm:col-span-2 lg:col-span-1">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
                     <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
@@ -156,12 +119,15 @@ export default function CRSCalculator() {
                   </div>
                   <h4 className="text-sm font-semibold text-white">Language Skills</h4>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-sm text-slate-300 leading-relaxed">
                   Strong English and French language test scores can add substantial points to your profile.
                 </p>
               </div>
             </div>
           </div>
+
+          {/* Bottom padding for mobile */}
+          <div className="h-8 lg:h-12"></div>
         </div>
       </div>
     </div>

@@ -8,10 +8,11 @@ import {
   FaTag,
   FaHistory,
   FaFilter,
+  FaSearch,
 } from "react-icons/fa"
 import { motion } from "framer-motion"
 import { useTranslation } from "react-i18next"
-import { usePaginatedData, useCategories } from "../Utils/useOptimizedData"
+import { useOptimizedData } from "../Utils/useOptimizedData"
 import { memo } from "react"
 
 // Add custom debounce hook at the top level
@@ -28,72 +29,71 @@ function useDebounce(value, delay) {
   return debouncedValue
 }
 
-// Memoized DrawCard component
+// Modern DrawCard component
 const DrawCard = memo(function DrawCard({ draw, index }) {
   return (
     <motion.div
       key={index}
-      className="group relative p-3 sm:p-6"
+      className="group relative p-3 lg:p-4"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
       style={{ willChange: "transform, opacity" }}
     >
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl blur opacity-0 group-hover:opacity-30 transition duration-500"></div>
-      <div className="relative bg-slate-800 border-2 border-slate-700 hover:border-orange-500/50 p-4 sm:p-6 rounded-2xl shadow-2xl hover:shadow-orange-500/10 transition-all duration-300">
-        <div className="flex items-start justify-between mb-4 sm:mb-6 gap-2 sm:gap-3">
-          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-orange-400 flex-1 min-w-0">Draw #{draw.drawNumber}</h3>
+      <div className="relative bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 hover:border-emerald-500/50 p-6 rounded-2xl shadow-xl hover:shadow-2xl hover:shadow-emerald-500/25 transition-all duration-300 group-hover:-translate-y-1">
+        <div className="flex items-start justify-between mb-6 gap-3">
+          <h3 className="text-xl lg:text-2xl font-bold text-emerald-400 flex-1 min-w-0">Draw #{draw.drawNumber}</h3>
           <span 
-            className="px-2 sm:px-3 py-1 sm:py-2 bg-gradient-to-r from-orange-600 to-red-600 text-white text-xs sm:text-sm rounded-2xl font-semibold shadow-lg max-w-[100px] sm:max-w-[150px] truncate flex-shrink-0 cursor-help"
+            className="px-3 py-2 bg-gradient-to-r from-emerald-600 to-blue-600 text-white text-sm rounded-xl font-semibold shadow-lg max-w-[150px] truncate flex-shrink-0 cursor-help"
             title={draw.category || "General"}
           >
             {draw.category || "General"}
           </span>
         </div>
 
-        <div className="space-y-3 sm:space-y-5">
+        <div className="space-y-4">
           <div className="flex items-center text-slate-300">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center mr-3 sm:mr-4 shadow-lg">
-              <FaCalendarAlt className="text-white text-sm sm:text-lg" />
+            <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
+              <FaCalendarAlt className="text-white text-lg" />
             </div>
-            <span className="text-sm sm:text-base font-medium">{draw.date}</span>
+            <span className="text-base font-medium">{draw.date}</span>
           </div>
 
           <div className="flex items-center text-slate-300">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl flex items-center justify-center mr-3 sm:mr-4 shadow-lg">
-              <FaHashtag className="text-white text-sm sm:text-lg" />
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
+              <FaHashtag className="text-white text-lg" />
             </div>
-            <span className="text-sm sm:text-base font-medium">CRS: {draw.minimumCRS}</span>
+            <span className="text-base font-medium">CRS: {draw.minimumCRS}</span>
           </div>
 
           <div className="flex items-center text-slate-300">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center mr-3 sm:mr-4 shadow-lg">
-              <FaUsers className="text-white text-sm sm:text-lg" />
+            <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
+              <FaUsers className="text-white text-lg" />
             </div>
-            <span className="text-sm sm:text-base font-medium">{draw.invitationsIssued} Invitations</span>
+            <span className="text-base font-medium">{draw.invitationsIssued} Invitations</span>
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 rounded-b-2xl transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-b-2xl transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center"></div>
       </div>
     </motion.div>
   )
 })
 
-// Loading skeleton component
+// Modern loading skeleton component
 const DrawCardSkeleton = memo(function DrawCardSkeleton() {
   return (
-    <div className="group relative p-3 sm:p-6">
-      <div className="relative bg-slate-800 border-2 border-slate-700 p-4 sm:p-6 rounded-2xl shadow-2xl">
-        <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <div className="h-6 sm:h-8 w-24 sm:w-32 bg-slate-700 rounded-lg animate-pulse"></div>
-          <div className="h-6 sm:h-8 w-20 sm:w-24 bg-slate-700 rounded-2xl animate-pulse"></div>
+    <div className="p-3 lg:p-4">
+      <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 p-6 rounded-2xl shadow-xl">
+        <div className="flex items-center justify-between mb-6">
+          <div className="h-8 w-32 bg-slate-700 rounded-lg animate-pulse"></div>
+          <div className="h-8 w-24 bg-slate-700 rounded-xl animate-pulse"></div>
         </div>
-        <div className="space-y-3 sm:space-y-5">
+        <div className="space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="flex items-center">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-700 rounded-2xl animate-pulse mr-3 sm:mr-4"></div>
-              <div className="h-5 sm:h-6 w-32 sm:w-40 bg-slate-700 rounded-lg animate-pulse"></div>
+              <div className="w-12 h-12 bg-slate-700 rounded-xl animate-pulse mr-4"></div>
+              <div className="h-6 w-40 bg-slate-700 rounded-lg animate-pulse"></div>
             </div>
           ))}
         </div>
@@ -102,72 +102,77 @@ const DrawCardSkeleton = memo(function DrawCardSkeleton() {
   )
 })
 
-// Memoized FilterSection component
-const FilterSection = memo(function FilterSection({
-  year,
-  setYear,
-  category,
-  setCategory,
+// Modern filter component
+const FilterSection = memo(function FilterSection({ 
+  searchTerm, 
+  setSearchTerm, 
+  selectedCategory, 
+  setSelectedCategory, 
   categories,
   sortOrder,
-  toggleSortOrder,
+  setSortOrder 
 }) {
+  const { t } = useTranslation()
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.2 }}
-      className="max-w-4xl mx-auto mb-8 sm:mb-12"
+      className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 mb-8 shadow-xl"
     >
-      <div className="bg-slate-800 border-2 border-slate-700 p-4 sm:p-8 rounded-2xl sm:rounded-3xl shadow-2xl">
-        <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-          <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg">
-            <FaFilter className="text-white text-lg sm:text-xl" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Search Input */}
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <FaSearch className="h-5 w-5 text-slate-400" />
           </div>
-          <h2 className="text-2xl sm:text-3xl text-white font-bold">Filter Draws</h2>
+          <input
+            type="text"
+            placeholder={t("history.searchPlaceholder")}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="block w-full pl-10 pr-3 py-3 border border-slate-600/50 rounded-xl bg-slate-800/60 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all shadow-lg"
+          />
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-          <div className="relative flex-1">
-            <input
-              type="text"
-              placeholder="Filter by year (e.g. 2024)"
-              value={year}
-              onChange={(e) => setYear(e.target.value)}
-              className="w-full p-3 sm:p-4 pl-12 sm:pl-14 rounded-2xl border-2 border-slate-600 bg-slate-900 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all text-sm sm:text-base"
-            />
-            <FaCalendarAlt className="absolute left-4 sm:left-5 top-1/2 transform -translate-y-1/2 text-orange-400 text-base sm:text-lg" />
-          </div>
-
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={toggleSortOrder}
-            className="p-3 sm:p-4 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 rounded-2xl transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl"
-            title="Toggle sort order"
+        {/* Category Filter */}
+        <div>
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="block w-full px-3 py-3 border border-slate-600/50 rounded-xl bg-slate-800/60 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all shadow-lg appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=US-ASCII,<svg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23ffffff%22/%3E%3C/svg%3E')] bg-no-repeat bg-right-3 bg-[length:20px_20px] pr-10"
           >
-            {sortOrder === "asc" ? (
-              <FaSortAmountUp size={20} className="text-white" />
-            ) : (
-              <FaSortAmountDown size={20} className="text-white" />
-            )}
-          </motion.button>
-
-          <div className="relative flex-1">
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full p-3 sm:p-4 pl-12 sm:pl-14 rounded-2xl border-2 border-slate-600 bg-slate-900 text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all appearance-none text-sm sm:text-base"
-            >
-              <option value="">All Categories</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat} className="bg-slate-900 text-white">
-                  {cat}
+            <option value="">{t("history.allCategories")}</option>
+            {categories && categories.length > 0 ? (
+              categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
                 </option>
-              ))}
-            </select>
-            <FaTag className="absolute left-4 sm:left-5 top-1/2 transform -translate-y-1/2 text-orange-400 text-base sm:text-lg" />
-          </div>
+              ))
+            ) : (
+              <option value="" disabled>Loading categories...</option>
+            )}
+          </select>
+        </div>
+
+        {/* Sort Order */}
+        <div>
+          <button
+            onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 text-white font-medium rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl shadow-emerald-500/25"
+          >
+            {sortOrder === "desc" ? (
+              <>
+                <FaSortAmountDown className="w-5 h-5" />
+                {t("history.newestFirst")}
+              </>
+            ) : (
+              <>
+                <FaSortAmountUp className="w-5 h-5" />
+                {t("history.oldestFirst")}
+              </>
+            )}
+          </button>
         </div>
       </div>
     </motion.div>
@@ -175,172 +180,243 @@ const FilterSection = memo(function FilterSection({
 })
 
 export default function History() {
-  const [yearInput, setYearInput] = useState("")
-  const debouncedYear = useDebounce(yearInput, 500)
-  const [category, setCategory] = useState("")
+  const { t } = useTranslation()
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("")
   const [sortOrder, setSortOrder] = useState("desc")
   const [currentPage, setCurrentPage] = useState(1)
-  const cardsPerPage = 6
-  const { t, i18n } = useTranslation()
+  const [allDraws, setAllDraws] = useState([])
+  const [hasMore, setHasMore] = useState(true)
 
-  const toggleSortOrder = useCallback(() => {
-    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
+  const debouncedSearchTerm = useDebounce(searchTerm, 300)
+  
+  // Fetch categories
+  const { data: categoriesData } = useOptimizedData('/categories', {}, true)
+  
+  // Fetch draws with pagination
+  const { data: drawsData, loading: drawsLoading, error: drawsError } = useOptimizedData('/draws', {
+    page: currentPage,
+    limit: 12,
+    search: debouncedSearchTerm || undefined,
+    category: selectedCategory || undefined,
+    sort: sortOrder
+  }, true)
+
+  // Extract categories from the API response
+  const categories = useMemo(() => {
+    if (categoriesData?.categories) {
+      return categoriesData.categories
+    }
+    if (categoriesData?.data) {
+      return categoriesData.data
+    }
+    return []
+  }, [categoriesData])
+
+  // Handle draws data
+  useEffect(() => {
+    if (drawsData?.draws) {
+      if (currentPage === 1) {
+        setAllDraws(drawsData.draws)
+      } else {
+        setAllDraws(prev => [...prev, ...drawsData.draws])
+      }
+      setHasMore(drawsData.pagination?.hasNext || false)
+    }
+  }, [drawsData, currentPage])
+
+  // Filter draws based on search and category
+  const filteredDraws = useMemo(() => {
+    if (!allDraws) return []
+    
+    let filtered = allDraws
+    
+    if (debouncedSearchTerm) {
+      filtered = filtered.filter(draw => 
+        draw.drawNumber?.toString().includes(debouncedSearchTerm) ||
+        draw.category?.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+        draw.date?.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+      )
+    }
+    
+    if (selectedCategory) {
+      filtered = filtered.filter(draw => draw.category === selectedCategory)
+    }
+    
+    return filtered
+  }, [allDraws, debouncedSearchTerm, selectedCategory])
+
+  const handleLoadMore = useCallback(() => {
+    if (hasMore && !drawsLoading) {
+      setCurrentPage(prev => prev + 1)
+    }
+  }, [hasMore, drawsLoading])
+
+  const resetFilters = useCallback(() => {
+    setSearchTerm("")
+    setSelectedCategory("")
+    setCurrentPage(1)
+    setAllDraws([])
   }, [])
 
-  // Use optimized data hooks
-  const { data: categoriesData, refetch: refetchCategories } = useCategories()
-  const categories = categoriesData?.categories || []
-
-  const { data: drawsData, loading, refetch: refetchDraws } = usePaginatedData(
-    "/draws",
-    {
-      year: debouncedYear || undefined,
-      category: category || undefined,
-    },
-    50,
-    true // includeLanguage: true to get French translations
-  )
-
-  // Refetch data when language changes
-  useEffect(() => {
-    const handleLanguageChange = () => {
-      console.log('[History] Language changed, refetching data...');
-      refetchCategories()
-      refetchDraws()
-    }
-
-    // Listen for language changes
-    i18n.on('languageChanged', handleLanguageChange)
-    console.log('[History] Language change listener added');
-    
-    return () => {
-      i18n.off('languageChanged', handleLanguageChange)
-      console.log('[History] Language change listener removed');
-    }
-  }, [i18n, refetchCategories, refetchDraws])
-
-  // Memoized sorted draws
-  const sortedDraws = useMemo(() => {
-    return [...(drawsData || [])].sort((a, b) => {
-      const dateA = new Date(a.date)
-      const dateB = new Date(b.date)
-      return sortOrder === "asc" ? dateA - dateB : dateB - dateA
-    })
-  }, [drawsData, sortOrder])
-
-  // Memoized paginated draws
-  const paginatedDraws = useMemo(() => {
-    const startIndex = (currentPage - 1) * cardsPerPage
-    return sortedDraws.slice(startIndex, startIndex + cardsPerPage)
-  }, [sortedDraws, currentPage])
-
-  const totalPages = Math.ceil(sortedDraws.length / cardsPerPage)
-
-  // Reset to first page when filters change
+  // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1)
-  }, [debouncedYear, category, sortOrder])
+    setAllDraws([])
+  }, [debouncedSearchTerm, selectedCategory])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black pt-16 sm:pt-20 pb-12">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        {/* Header Section */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          style={{ willChange: "transform, opacity" }}
-          className="text-center mb-8 sm:mb-12"
-        >
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pb-8">
+      <div className="relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header Section */}
           <motion.div
-            initial={{ scale: 0.95 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            style={{ willChange: "transform" }}
-            className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-orange-500 via-red-500 to-pink-600 rounded-3xl mb-6 sm:mb-8 shadow-2xl"
+            initial={{ opacity: 0, y: -40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="text-center mb-12 lg:mb-16 pt-8"
           >
-            <FaHistory className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 200 }}
+              className="inline-flex items-center justify-center w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-emerald-500 via-blue-600 to-purple-600 rounded-3xl mb-6 lg:mb-8 shadow-2xl shadow-emerald-500/25 relative"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-3xl"></div>
+              <FaHistory className="w-10 h-10 lg:w-12 lg:h-12 text-white relative z-10" />
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-4xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-white via-emerald-100 to-blue-200 bg-clip-text text-transparent mb-6 tracking-tight"
+            >
+              {t("history.title")}
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="text-lg lg:text-xl text-slate-300 font-medium max-w-4xl mx-auto leading-relaxed px-4"
+            >
+              {t("history.subtitle")}
+            </motion.p>
+
+            {/* Decorative line */}
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: "120px" }}
+              transition={{ duration: 1, delay: 0.8 }}
+              className="h-1 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full mx-auto mt-8"
+            />
           </motion.div>
-          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-orange-400 via-red-400 to-pink-400 bg-clip-text text-transparent mb-4 sm:mb-6">
-            {t("history.title")}
-          </h1>
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-slate-300 font-medium max-w-2xl mx-auto px-2">
-            {t("history.subtitle")}
-          </p>
-        </motion.div>
 
-        {/* Filter Section */}
-        <FilterSection
-          year={yearInput}
-          setYear={setYearInput}
-          category={category}
-          setCategory={setCategory}
-          categories={categories}
-          sortOrder={sortOrder}
-          toggleSortOrder={toggleSortOrder}
-        />
+          {/* Filter Section */}
+          <FilterSection
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            categories={categories}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+          />
 
-        {/* Draw Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
-          {loading ? (
-            <>
-              {[...Array(cardsPerPage)].map((_, index) => (
+          {/* Reset Filters Button */}
+          {(searchTerm || selectedCategory) && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center mb-8"
+            >
+              <button
+                onClick={resetFilters}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-slate-700/50 hover:bg-slate-700/70 text-slate-300 hover:text-white font-medium rounded-xl transition-all duration-300 border border-slate-600/50 hover:border-slate-500/50"
+              >
+                <FaFilter className="w-4 h-4" />
+                {t("history.resetFilters")}
+              </button>
+            </motion.div>
+          )}
+
+          {/* Error State */}
+          {drawsError && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-16"
+            >
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-red-500/20 rounded-2xl mb-4">
+                <FaHistory className="w-8 h-8 text-red-400" />
+              </div>
+              <p className="text-red-400 text-xl font-medium mb-4">Error loading data</p>
+              <p className="text-slate-500 text-base">Please try again later</p>
+            </motion.div>
+          )}
+
+          {/* Draws Grid */}
+          {drawsLoading && filteredDraws.length === 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, index) => (
                 <DrawCardSkeleton key={index} />
               ))}
+            </div>
+          ) : filteredDraws.length > 0 ? (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
+              >
+                {filteredDraws.map((draw, index) => (
+                  <DrawCard key={draw.id || index} draw={draw} index={index} />
+                ))}
+              </motion.div>
+
+              {/* Load More Button */}
+              {hasMore && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center mb-8"
+                >
+                  <button
+                    onClick={handleLoadMore}
+                    disabled={drawsLoading}
+                    className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 disabled:from-slate-600 disabled:to-slate-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl shadow-emerald-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {drawsLoading ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        {t("common.loading")}
+                      </>
+                    ) : (
+                      <>
+                        <FaHistory className="w-5 h-5" />
+                        {t("history.loadMore")}
+                      </>
+                    )}
+                  </button>
+                </motion.div>
+              )}
             </>
-          ) : paginatedDraws.length === 0 ? (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="col-span-full text-center py-12 sm:py-16">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-2xl">
-                <FaHistory className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
-              </div>
-              <p className="text-white text-xl sm:text-2xl font-bold mb-2">No draws found.</p>
-              <p className="text-slate-400 text-base sm:text-lg">Try adjusting your filters to see more results.</p>
-            </motion.div>
           ) : (
-            paginatedDraws.map((draw, index) => <DrawCard key={draw.drawNumber} draw={draw} index={index} />)
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="text-center py-16"
+            >
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-700/50 rounded-2xl mb-4">
+                <FaHistory className="w-8 h-8 text-slate-400" />
+              </div>
+              <p className="text-slate-400 text-xl font-medium mb-4">{t("history.noResults")}</p>
+              <p className="text-slate-500 text-base">{t("history.tryDifferentFilters")}</p>
+            </motion.div>
           )}
         </div>
-
-        {/* Pagination */}
-        {!loading && totalPages > 1 && (
-          <div className="flex flex-col sm:flex-row justify-center items-center mt-8 sm:mt-12 gap-2 sm:gap-3">
-            <button
-              onClick={() => setCurrentPage(1)}
-              disabled={currentPage === 1}
-              className="px-3 sm:px-5 py-2 sm:py-3 bg-slate-800 border-2 border-slate-700 hover:border-orange-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl text-white text-sm sm:text-base font-semibold transition-all duration-200 shadow-lg hover:shadow-orange-500/20"
-              aria-label="First page"
-            >
-              First
-            </button>
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="px-3 sm:px-5 py-2 sm:py-3 bg-slate-800 border-2 border-slate-700 hover:border-orange-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl text-white text-sm sm:text-base font-semibold transition-all duration-200 shadow-lg hover:shadow-orange-500/20"
-              aria-label="Previous page"
-            >
-              Previous
-            </button>
-            <span className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl text-white text-sm sm:text-base font-bold min-w-[120px] sm:min-w-[140px] text-center shadow-lg">
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="px-3 sm:px-5 py-2 sm:py-3 bg-slate-800 border-2 border-slate-700 hover:border-orange-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl text-white text-sm sm:text-base font-semibold transition-all duration-200 shadow-lg hover:shadow-orange-500/20"
-              aria-label="Next page"
-            >
-              Next
-            </button>
-            <button
-              onClick={() => setCurrentPage(totalPages)}
-              disabled={currentPage === totalPages}
-              className="px-3 sm:px-5 py-2 sm:py-3 bg-slate-800 border-2 border-slate-700 hover:border-orange-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl text-white text-sm sm:text-base font-semibold transition-all duration-200 shadow-lg hover:shadow-orange-500/20"
-              aria-label="Last page"
-            >
-              Last
-            </button>
-          </div>
-        )}
       </div>
     </div>
   )

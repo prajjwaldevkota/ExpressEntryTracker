@@ -29,17 +29,18 @@ const Pool = lazy(() => import("./pages/Pool"));
 const NOC = lazy(() => import("./pages/NOC"));
 const CRSCalculator = lazy(() => import("./pages/CRSCalculator"));
 
-// Memoized LoadingSpinner component
+// Modern LoadingSpinner component
 const LoadingSpinner = memo(() => (
-  <div className="flex items-center justify-center min-h-screen">
+  <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
     <div className="relative">
-      <div className="w-12 h-12 border-4 border-blue-500/30 rounded-full animate-spin"></div>
-      <div className="absolute top-0 left-0 w-12 h-12 border-4 border-transparent border-t-blue-500 rounded-full animate-spin"></div>
+      <div className="w-16 h-16 border-4 border-slate-700 rounded-full animate-spin"></div>
+      <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-emerald-500 border-r-blue-500 rounded-full animate-spin"></div>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
     </div>
   </div>
 ));
 
-// Memoized NavItem component with optimized animations
+// Modern NavItem component
 const NavItem = memo(function NavItem({
   path,
   label,
@@ -56,10 +57,10 @@ const NavItem = memo(function NavItem({
       <Link
         to={path}
         onClick={onClick}
-        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 text-sm font-medium ${
+        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 text-sm font-medium ${
           isActive
-            ? "bg-blue-600 text-white shadow-lg"
-            : "text-gray-300 hover:text-white hover:bg-gray-800/50"
+            ? "bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg shadow-emerald-500/25"
+            : "text-slate-300 hover:text-white hover:bg-slate-800/50 hover:shadow-lg"
         }`}
       >
         {Icon && <Icon className="w-4 h-4" />}
@@ -69,7 +70,7 @@ const NavItem = memo(function NavItem({
   );
 });
 
-// Memoized MobileMenu component with optimized animations
+// Modern MobileMenu component
 const MobileMenu = memo(function MobileMenu({
   isOpen,
   onClose,
@@ -89,10 +90,10 @@ const MobileMenu = memo(function MobileMenu({
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.2 }}
           style={{ willChange: "transform, opacity" }}
-          className="fixed top-[2rem] sm:top-16 left-0 w-full bg-gray-900/95 backdrop-blur-xl border-b border-gray-700/50 z-40 md:hidden"
+          className="fixed top-[4rem] left-0 w-full bg-slate-900/95 backdrop-blur-xl border-b border-slate-700/50 z-40 md:hidden shadow-2xl"
         >
-          <div className="max-w-7xl mx-auto px-4 py-3">
-            <div className="flex flex-col space-y-2">
+          <div className="max-w-7xl mx-auto px-4 py-4">
+            <div className="flex flex-col space-y-3">
               {navItems.map((item) => (
                 <NavItem
                   key={item.path}
@@ -109,14 +110,13 @@ const MobileMenu = memo(function MobileMenu({
   );
 });
 
-// Memoized Navigation component with optimized state management
+// Modern Navigation component
 const Navigation = memo(function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
   const { t } = useTranslation();
   const location = useLocation();
 
-  // Memoize navItems to prevent unnecessary re-renders
   const navItems = useMemo(() => [
     { path: "/", label: t("nav.home"), icon: FaHome },
     { path: "/history", label: t("nav.history"), icon: FaHistory },
@@ -126,7 +126,6 @@ const Navigation = memo(function Navigation() {
     { path: "/calculator", label: t("nav.calculator"), icon: FaCalculator },
   ], [t]);
 
-  // Memoize handlers
   const handleResize = useCallback(() => {
     setViewportHeight(window.innerHeight);
   }, []);
@@ -139,7 +138,6 @@ const Navigation = memo(function Navigation() {
     setIsMobileMenuOpen(false);
   }, []);
 
-  // Add keyboard navigation for mobile menu
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (e.key === "Escape" && isMobileMenuOpen) {
@@ -158,27 +156,27 @@ const Navigation = memo(function Navigation() {
 
   return (
     <div style={{ minHeight: `${viewportHeight}px` }}>
-      <nav className="fixed top-0 left-0 w-full z-50 bg-gray-900/95 backdrop-blur-xl border-b border-gray-700/50 px-3 sm:px-4 py-2 sm:py-3 shadow-lg">
+      <nav className="fixed top-0 left-0 w-full z-50 bg-slate-900/95 backdrop-blur-xl border-b border-slate-700/50 px-4 py-3 shadow-xl">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-3">
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center text-white font-extrabold text-base sm:text-lg shadow-lg"
+              className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-lg shadow-emerald-500/25"
             >
               <span className="tracking-tight">EE</span>
             </motion.div>
             <Link
               to="/"
-              className="text-base sm:text-lg md:text-xl font-extrabold bg-gradient-to-r from-white via-blue-100 to-blue-200 bg-clip-text text-transparent drop-shadow-lg tracking-tight"
+              className="text-lg md:text-xl font-extrabold bg-gradient-to-r from-white via-emerald-100 to-blue-200 bg-clip-text text-transparent drop-shadow-lg tracking-tight"
             >
-              Express Entry <span className="text-blue-400">Tracker</span>
+              Express Entry <span className="text-emerald-400">Tracker</span>
             </Link>
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
+          <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
             {navItems.map((item) => (
               <NavItem
                 key={item.path}
@@ -195,11 +193,11 @@ const Navigation = memo(function Navigation() {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={toggleMobileMenu}
-              className="text-gray-300 hover:text-white transition-colors duration-300 p-2 rounded-lg hover:bg-gray-800/50"
+              className="text-slate-300 hover:text-white transition-colors duration-300 p-2 rounded-xl hover:bg-slate-800/50"
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMobileMenuOpen}
             >
-              {isMobileMenuOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
+              {isMobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
             </motion.button>
           </div>
         </div>
@@ -212,7 +210,7 @@ const Navigation = memo(function Navigation() {
         currentPath={location.pathname}
       />
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 transition-colors duration-300 mt-10 sm:mt-15">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 transition-colors duration-300 mt-16">
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
             <Route path="/" element={<Home />} />

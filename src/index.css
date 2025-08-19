@@ -2,9 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mobile-first viewport fixes */
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+  width: 100%;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Prevent white spaces on mobile */
+* {
+  box-sizing: border-box;
+}
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Custom scrollbar */
@@ -30,11 +62,82 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Mobile-specific fixes */
+@media (max-width: 768px) {
+  html, body {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  #root {
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+  
+  /* Prevent horizontal scrolling on mobile */
+  .min-h-screen {
+    min-height: 100vh;
+    min-height: 100dvh;
+    width: 100%;
+    overflow-x: hidden;
+  }
+}
+
+/* Prevent zoom on input focus for iOS */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  select,
+  textarea,
+  input {
+    font-size: 16px;
+  }
+}
+
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Fix for mobile Safari 100vh issue */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 640px) {
+  /* Ensure proper touch targets */
+  button, select, input, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent text selection on mobile */
+  * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Allow text selection in inputs */
+  input, textarea, select {
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
   }
 }
