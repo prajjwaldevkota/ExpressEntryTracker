@@ -35,8 +35,8 @@ const NavLink = memo(function NavLink({ to, children, isActive }) {
     <Link
       to={to}
       className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${isActive
-          ? "text-sky-600 bg-sky-50 dark:text-sky-400 dark:bg-sky-900/30"
-          : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800"
+        ? "text-sky-600 bg-sky-50 dark:text-sky-400 dark:bg-sky-900/30"
+        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800"
         }`}
     >
       {children}
@@ -77,8 +77,8 @@ const MobileMenu = memo(function MobileMenu({ isOpen, onClose, navItems, current
               to={item.path}
               onClick={onClose}
               className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${currentPath === item.path
-                  ? "text-sky-600 bg-sky-50 dark:text-sky-400 dark:bg-sky-900/30"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800"
+                ? "text-sky-600 bg-sky-50 dark:text-sky-400 dark:bg-sky-900/30"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800"
                 }`}
             >
               {item.label}
@@ -176,24 +176,98 @@ const Header = memo(function Header() {
 
 // Footer Component
 const Footer = memo(function Footer() {
+  const { t } = useTranslation();
+
+  const footerLinks = [
+    { label: "Home", path: "/" },
+    { label: "History", path: "/history" },
+    { label: "Trends", path: "/trends" },
+    { label: "Calculator", path: "/calculator" },
+  ];
+
   return (
     <footer className="mt-auto border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 transition-colors">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-sky-500 rounded flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-              </svg>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          {/* Brand */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg>
+              </div>
+              <span className="font-semibold text-slate-900 dark:text-white">
+                Express Entry<span className="text-sky-500">Tracker</span>
+              </span>
             </div>
-            <span className="text-sm text-slate-600 dark:text-slate-400">
-              Express Entry Tracker
-            </span>
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Your comprehensive tool for tracking Express Entry draws and calculating your CRS score.
+            </p>
           </div>
 
-          <p className="text-sm text-slate-500 dark:text-slate-500">
-            © {new Date().getFullYear()} All rights reserved. Not affiliated with IRCC.
-          </p>
+          {/* Quick Links */}
+          <div>
+            <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Quick Links</h4>
+            <ul className="space-y-2">
+              {footerLinks.map((link) => (
+                <li key={link.path}>
+                  <Link
+                    to={link.path}
+                    className="text-sm text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Resources */}
+          <div>
+            <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Official Resources</h4>
+            <ul className="space-y-2">
+              <li>
+                <a
+                  href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors inline-flex items-center gap-1"
+                >
+                  IRCC Express Entry
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.cic.gc.ca/english/immigrate/skilled/crs-tool.asp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors inline-flex items-center gap-1"
+                >
+                  Official CRS Tool
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="pt-8 border-t border-slate-200 dark:border-slate-800">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-slate-500 dark:text-slate-500">
+              © {new Date().getFullYear()} Express Entry Tracker. Not affiliated with IRCC.
+            </p>
+            <div className="flex items-center gap-4">
+              <ThemeToggle />
+              <LanguageSwitcher />
+            </div>
+          </div>
         </div>
       </div>
     </footer>

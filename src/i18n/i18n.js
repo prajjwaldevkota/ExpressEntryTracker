@@ -31,13 +31,4 @@ i18n
     }
   });
 
-// Add event listeners for debugging
-i18n.on('languageChanged', (lng) => {
-  console.log(`[i18n] Language changed to: ${lng}`);
-});
-
-i18n.on('initialized', () => {
-  console.log(`[i18n] Initialized with language: ${i18n.language}`);
-});
-
-export default i18n; 
+export default i18n;

@@ -181,7 +181,7 @@ export const calculateCRSScore = (formData) => {
 
   // C. Skill Transferability factors (updated to match official criteria)
   scores.skillTransferability = 0;
-  
+
   // Education + Language combinations
   const maxLanguageScore = Math.max(
     scores.englishBreakdown.speaking,
@@ -189,42 +189,48 @@ export const calculateCRSScore = (formData) => {
     scores.englishBreakdown.reading,
     scores.englishBreakdown.writing
   );
-  
+
+  // Check higher CLB levels first (CLB 9+ = 31pts, CLB 8 = 23pts, CLB 7 = 17pts)
   if (scores.education >= 90) {
-    if (maxLanguageScore >= 17) { // CLB 7
-      scores.skillTransferability += 13;
+    if (maxLanguageScore >= 31) { // CLB 9+
+      scores.skillTransferability += 25;
     } else if (maxLanguageScore >= 23) { // CLB 8
       scores.skillTransferability += 25;
-    } else if (maxLanguageScore >= 31) { // CLB 9+
-      scores.skillTransferability += 25;
+    } else if (maxLanguageScore >= 17) { // CLB 7
+      scores.skillTransferability += 13;
     }
   }
 
   // Education + Canadian Work Experience combinations
+  // Check higher years first
   if (scores.education >= 90 && scores.canadianWorkExperience > 0) {
-    if (canadianWorkExp >= 1) {
-      scores.skillTransferability += 13;
-    } else if (canadianWorkExp >= 2) {
+    if (canadianWorkExp >= 2) {
       scores.skillTransferability += 25;
+    } else if (canadianWorkExp >= 1) {
+      scores.skillTransferability += 13;
     }
   }
 
   // Foreign Work Experience + Language combinations
+  // Check higher CLB levels first
   const foreignWorkExp = parseInt(formData.foreignWorkExperience) || 0;
-  if (foreignWorkExp >= 1 && maxLanguageScore >= 17) { // CLB 7
-    scores.skillTransferability += 13;
-  } else if (foreignWorkExp >= 1 && maxLanguageScore >= 23) { // CLB 8
-    scores.skillTransferability += 25;
-  } else if (foreignWorkExp >= 1 && maxLanguageScore >= 31) { // CLB 9+
-    scores.skillTransferability += 25;
+  if (foreignWorkExp >= 1) {
+    if (maxLanguageScore >= 31) { // CLB 9+
+      scores.skillTransferability += 25;
+    } else if (maxLanguageScore >= 23) { // CLB 8
+      scores.skillTransferability += 25;
+    } else if (maxLanguageScore >= 17) { // CLB 7
+      scores.skillTransferability += 13;
+    }
   }
 
   // Foreign Work Experience + Canadian Work Experience combinations
+  // Check higher years first
   if (foreignWorkExp >= 1 && scores.canadianWorkExperience > 0) {
-    if (canadianWorkExp >= 1) {
-      scores.skillTransferability += 13;
-    } else if (canadianWorkExp >= 2) {
+    if (canadianWorkExp >= 2) {
       scores.skillTransferability += 25;
+    } else if (canadianWorkExp >= 1) {
+      scores.skillTransferability += 13;
     }
   }
 
@@ -263,10 +269,10 @@ export const calculateCRSScore = (formData) => {
   scores.additionalFactors = additionalScore;
 
   // Calculate totals
-  const coreFactorsTotal = scores.age + scores.education + scores.english + 
-                          scores.french + scores.canadianWorkExperience;
-  const spouseFactorsTotal = scores.spouseEducation + scores.spouseLanguage + 
-                            scores.spouseCanadianWork;
+  const coreFactorsTotal = scores.age + scores.education + scores.english +
+    scores.french + scores.canadianWorkExperience;
+  const spouseFactorsTotal = scores.spouseEducation + scores.spouseLanguage +
+    scores.spouseCanadianWork;
 
   totalScore = coreFactorsTotal + spouseFactorsTotal + scores.skillTransferability + additionalScore;
 

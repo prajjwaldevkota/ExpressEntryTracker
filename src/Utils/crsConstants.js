@@ -22,12 +22,7 @@ export const LANGUAGE_OPTIONS = [
   { value: "clb-10", label: "CLB 10+" },
 ];
 
-// English language test options (updated to include PTE Core)
-export const ENGLISH_TEST_OPTIONS = [
-  { value: "celpip", label: "CELPIP-G" },
-  { value: "ielts", label: "IELTS" },
-  { value: "pte", label: "PTE Core" },
-];
+
 
 // TEF Canada scoring options (updated to match official data)
 export const TEF_SCORING_OPTIONS = [
@@ -124,16 +119,8 @@ export const CANADIAN_EDUCATION_OPTIONS = [
   { value: "three-plus", label: "3+ year credential" },
 ];
 
-// Marital status options (updated to match official calculator)
-export const MARITAL_STATUS_OPTIONS = [
-  { value: "single", label: "Never Married / Single" },
-  { value: "married", label: "Married" },
-  { value: "common-law", label: "Common-Law" },
-  { value: "divorced", label: "Divorced / Separated" },
-  { value: "widowed", label: "Widowed" },
-  { value: "annulled", label: "Annulled Marriage" },
-  { value: "legally-separated", label: "Legally Separated" },
-];
+
+
 
 // Initial form data structure (updated to remove job offer fields)
 export const INITIAL_FORM_DATA = {
@@ -142,30 +129,30 @@ export const INITIAL_FORM_DATA = {
   age: "",
   education: "",
   hasSpouse: "no",
-  
+
   // Spouse Information (if applicable)
   spouseEducation: "",
   spouseLanguage: "",
   spouseCanadianWork: "",
-  
+
   // English Language Skills
   englishTestType: "",
   englishSpeaking: "",
   englishListening: "",
   englishReading: "",
   englishWriting: "",
-  
+
   // French Language Skills
   frenchTestType: "",
   frenchSpeaking: "",
   frenchListening: "",
   frenchReading: "",
   frenchWriting: "",
-  
+
   // Work Experience
   canadianWorkExperience: "",
   foreignWorkExperience: "",
-  
+
   // Additional Factors
   provincialNomination: "no",
   frenchSkills: "none",
@@ -196,7 +183,3 @@ export const getFrenchTooltip = (testType, skill) => {
   return `Your French ${skill} proficiency level (${testName} test)`;
 };
 
-// Helper function to get English test options
-export const getEnglishTestOptions = () => {
-  return ENGLISH_TEST_OPTIONS;
-}; 
