@@ -4,61 +4,75 @@ import { getScoreAnalysis } from "../../Utils/crsCalculator";
 const ScoreAnalysis = memo(function ScoreAnalysis({ totalScore }) {
   const analysis = getScoreAnalysis(totalScore);
 
+  const getColorClasses = () => {
+    if (analysis.color === "emerald") return {
+      bg: "bg-emerald-50 dark:bg-emerald-900/20",
+      border: "border-emerald-200 dark:border-emerald-800",
+      text: "text-emerald-800 dark:text-emerald-300"
+    };
+    if (analysis.color === "amber") return {
+      bg: "bg-amber-50 dark:bg-amber-900/20",
+      border: "border-amber-200 dark:border-amber-800",
+      text: "text-amber-800 dark:text-amber-300"
+    };
+    return {
+      bg: "bg-red-50 dark:bg-red-900/20",
+      border: "border-red-200 dark:border-red-800",
+      text: "text-red-800 dark:text-red-300"
+    };
+  };
+
+  const colors = getColorClasses();
+
   return (
-    <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-2xl">
-      <h3 className="text-xl font-bold text-white mb-4">
-        Score Analysis & Recommendations
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 transition-colors">
+      <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">
+        Score Analysis
       </h3>
-      <div className="space-y-4 text-sm">
-        <div className={`bg-${analysis.color}-500/20 p-4 rounded-xl border border-${analysis.color}-500/20`}>
-          <p className={`text-${analysis.color}-400 font-medium`}>
+
+      <div className="space-y-4">
+        {/* Analysis Message */}
+        <div className={`${colors.bg} ${colors.border} border rounded-lg p-4`}>
+          <p className={`${colors.text} text-sm font-medium`}>
             {analysis.message}
           </p>
-          <p className={`text-${analysis.color}-200 mt-2`}>
+          <p className={`${colors.text} text-sm mt-1 opacity-80`}>
             {analysis.details}
           </p>
         </div>
 
-        <div className="bg-blue-500/20 p-4 rounded-xl border border-blue-500/20">
-          <h5 className="text-blue-400 font-medium mb-2">
-            💡 Ways to Improve Your Score:
-          </h5>
-          <ul className="text-blue-200 space-y-1 text-sm">
-            <li>
-              • Achieve CLB 9+ in all language skills for maximum points
+        {/* Improvement Tips */}
+        <div>
+          <h4 className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+            Ways to Improve
+          </h4>
+          <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+            <li className="flex items-start gap-2">
+              <span className="text-sky-500 mt-1">•</span>
+              <span>Achieve CLB 9+ in all language skills</span>
             </li>
-            <li>
-              • Gain Canadian work experience (each year significantly boosts your score)
+            <li className="flex items-start gap-2">
+              <span className="text-sky-500 mt-1">•</span>
+              <span>Gain Canadian work experience</span>
             </li>
-            <li>• Learn French (can add 25-50 points)</li>
-            <li>• Get a Provincial Nomination (+600 points)</li>
-            <li>• Complete Canadian education credentials</li>
-            <li>
-              • If you have a spouse, improve their language and education scores
+            <li className="flex items-start gap-2">
+              <span className="text-sky-500 mt-1">•</span>
+              <span>Learn French for additional points</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-sky-500 mt-1">•</span>
+              <span>Get a Provincial Nomination (+600 points)</span>
             </li>
           </ul>
         </div>
 
-        <div className="bg-purple-500/20 p-4 rounded-xl border border-purple-500/20">
-          <h5 className="text-purple-400 font-medium mb-2">
-            📋 Important Notes:
-          </h5>
-          <ul className="text-purple-200 space-y-1 text-sm">
-            <li>
-              • Job offer points have been removed as of March 25, 2025
-            </li>
-            <li>
-              • This calculator provides an estimate - official scores may vary
-            </li>
-            <li>
-              • Language test results must be less than 2 years old
-            </li>
-            <li>
-              • Educational credentials may need assessment (ECA)
-            </li>
-            <li>
-              • Minimum CRS score varies with each Express Entry draw
-            </li>
+        {/* Notes */}
+        <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4 text-xs text-slate-500 dark:text-slate-400">
+          <p className="font-medium text-slate-700 dark:text-slate-300 mb-1">Important Notes:</p>
+          <ul className="space-y-1">
+            <li>• Job offer points removed as of March 25, 2025</li>
+            <li>• This is an estimate - official scores may vary</li>
+            <li>• Language tests must be less than 2 years old</li>
           </ul>
         </div>
       </div>
@@ -66,4 +80,4 @@ const ScoreAnalysis = memo(function ScoreAnalysis({ totalScore }) {
   );
 });
 
-export default ScoreAnalysis; 
+export default ScoreAnalysis;

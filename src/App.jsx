@@ -1,4 +1,4 @@
-import { useState, useEffect, memo, lazy, Suspense, useCallback, useMemo } from "react";
+import { useState, useEffect, memo, lazy, Suspense, useMemo } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -8,20 +8,10 @@ import {
 } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./components/LanguageSwitcher";
+import ThemeToggle from "./components/ThemeToggle";
 import ScrollToTop from "./components/ScrollToTop";
-import {
-  FaBars,
-  FaTimes,
-  FaHome,
-  FaHistory,
-  FaChartLine,
-  FaUsers,
-  FaBriefcase,
-  FaCalculator,
-} from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
 
-// Lazy load pages with loading fallback
+// Lazy load pages
 const Home = lazy(() => import("./pages/Home"));
 const History = lazy(() => import("./pages/History"));
 const Trends = lazy(() => import("./pages/Trends"));
@@ -29,189 +19,195 @@ const Pool = lazy(() => import("./pages/Pool"));
 const NOC = lazy(() => import("./pages/NOC"));
 const CRSCalculator = lazy(() => import("./pages/CRSCalculator"));
 
-// Modern LoadingSpinner component
-const LoadingSpinner = memo(() => (
-  <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-    <div className="relative">
-      <div className="w-16 h-16 border-4 border-slate-700 rounded-full animate-spin"></div>
-      <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-emerald-500 border-r-blue-500 rounded-full animate-spin"></div>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+// Simple Loading Component
+const PageLoader = memo(() => (
+  <div className="flex items-center justify-center min-h-[60vh]">
+    <div className="flex flex-col items-center gap-4">
+      <div className="w-8 h-8 border-2 border-slate-200 dark:border-slate-700 border-t-sky-500 rounded-full animate-spin" />
+      <p className="text-slate-500 dark:text-slate-400 text-sm">Loading...</p>
     </div>
   </div>
 ));
 
-// Modern NavItem component
-const NavItem = memo(function NavItem({
-  path,
-  label,
-  icon: Icon,
-  isActive,
-  onClick,
-}) {
+// Clean NavLink
+const NavLink = memo(function NavLink({ to, children, isActive }) {
   return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ duration: 0.2 }}
-    >
-      <Link
-        to={path}
-        onClick={onClick}
-        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 text-sm font-medium ${
-          isActive
-            ? "bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-lg shadow-emerald-500/25"
-            : "text-slate-300 hover:text-white hover:bg-slate-800/50 hover:shadow-lg"
+    <Link
+      to={to}
+      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${isActive
+          ? "text-sky-600 bg-sky-50 dark:text-sky-400 dark:bg-sky-900/30"
+          : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800"
         }`}
-      >
-        {Icon && <Icon className="w-4 h-4" />}
-        <span className="whitespace-nowrap">{label}</span>
-      </Link>
-    </motion.div>
+    >
+      {children}
+    </Link>
   );
 });
 
-// Modern MobileMenu component
-const MobileMenu = memo(function MobileMenu({
-  isOpen,
-  onClose,
-  navItems,
-  currentPath,
-}) {
-  const handleClose = useCallback(() => {
-    onClose();
-  }, [onClose]);
+// Mobile Menu
+const MobileMenu = memo(function MobileMenu({ isOpen, onClose, navItems, currentPath }) {
+  if (!isOpen) return null;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.2 }}
-          style={{ willChange: "transform, opacity" }}
-          className="fixed top-[4rem] left-0 w-full bg-slate-900/95 backdrop-blur-xl border-b border-slate-700/50 z-40 md:hidden shadow-2xl"
-        >
-          <div className="max-w-7xl mx-auto px-4 py-4">
-            <div className="flex flex-col space-y-3">
-              {navItems.map((item) => (
-                <NavItem
-                  key={item.path}
-                  {...item}
-                  isActive={currentPath === item.path}
-                  onClick={handleClose}
-                />
-              ))}
-            </div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/20 dark:bg-black/50 z-40 lg:hidden"
+        onClick={onClose}
+      />
+
+      {/* Menu */}
+      <div className="fixed inset-y-0 right-0 w-72 bg-white dark:bg-slate-900 shadow-xl z-50 lg:hidden">
+        <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
+          <span className="font-semibold text-slate-900 dark:text-white">Menu</span>
+          <button
+            onClick={onClose}
+            className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <nav className="p-4 space-y-1">
+          {navItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              onClick={onClose}
+              className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${currentPath === item.path
+                  ? "text-sky-600 bg-sky-50 dark:text-sky-400 dark:bg-sky-900/30"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800"
+                }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Theme & Language in Mobile */}
+        <div className="absolute bottom-8 left-4 right-4 flex items-center gap-3">
+          <ThemeToggle />
+          <LanguageSwitcher />
+        </div>
+      </div>
+    </>
   );
 });
 
-// Modern Navigation component
-const Navigation = memo(function Navigation() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
+// Header Component
+const Header = memo(function Header() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { t } = useTranslation();
   const location = useLocation();
 
   const navItems = useMemo(() => [
-    { path: "/", label: t("nav.home"), icon: FaHome },
-    { path: "/history", label: t("nav.history"), icon: FaHistory },
-    { path: "/trends", label: t("nav.trends"), icon: FaChartLine },
-    { path: "/pool", label: t("nav.pool"), icon: FaUsers },
-    { path: "/noc", label: t("nav.noc"), icon: FaBriefcase },
-    { path: "/calculator", label: t("nav.calculator"), icon: FaCalculator },
+    { path: "/", label: t("nav.home") },
+    { path: "/history", label: t("nav.history") },
+    { path: "/trends", label: t("nav.trends") },
+    { path: "/pool", label: t("nav.pool") },
+    { path: "/calculator", label: t("nav.calculator") },
   ], [t]);
 
-  const handleResize = useCallback(() => {
-    setViewportHeight(window.innerHeight);
-  }, []);
-
-  const toggleMobileMenu = useCallback(() => {
-    setIsMobileMenuOpen(prev => !prev);
-  }, []);
-
-  const closeMobileMenu = useCallback(() => {
-    setIsMobileMenuOpen(false);
-  }, []);
-
+  // Close mobile menu on route change
   useEffect(() => {
-    const handleKeyPress = (e) => {
-      if (e.key === "Escape" && isMobileMenuOpen) {
-        closeMobileMenu();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [isMobileMenuOpen, closeMobileMenu]);
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [handleResize]);
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   return (
-    <div style={{ minHeight: `${viewportHeight}px` }}>
-      <nav className="fixed top-0 left-0 w-full z-50 bg-slate-900/95 backdrop-blur-xl border-b border-slate-700/50 px-4 py-3 shadow-xl">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-extrabold text-lg shadow-lg shadow-emerald-500/25"
-            >
-              <span className="tracking-tight">EE</span>
-            </motion.div>
-            <Link
-              to="/"
-              className="text-lg md:text-xl font-extrabold bg-gradient-to-r from-white via-emerald-100 to-blue-200 bg-clip-text text-transparent drop-shadow-lg tracking-tight"
-            >
-              Express Entry <span className="text-emerald-400">Tracker</span>
-            </Link>
-          </div>
+    <header className="sticky top-0 z-30 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 transition-colors">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            <span className="font-semibold text-slate-900 dark:text-white">
+              Express Entry<span className="text-sky-500">Tracker</span>
+            </span>
+          </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => (
-              <NavItem
+              <NavLink
                 key={item.path}
-                {...item}
+                to={item.path}
                 isActive={location.pathname === item.path}
-              />
+              >
+                {item.label}
+              </NavLink>
             ))}
-            <LanguageSwitcher />
-          </div>
+          </nav>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center gap-3">
-            <LanguageSwitcher />
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={toggleMobileMenu}
-              className="text-slate-300 hover:text-white transition-colors duration-300 p-2 rounded-xl hover:bg-slate-800/50"
-              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={isMobileMenuOpen}
+          {/* Right side */}
+          <div className="flex items-center gap-2">
+            <div className="hidden lg:flex items-center gap-2">
+              <ThemeToggle />
+              <LanguageSwitcher />
+            </div>
+
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="lg:hidden p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
             >
-              {isMobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
-            </motion.button>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
           </div>
         </div>
-      </nav>
+      </div>
 
       <MobileMenu
-        isOpen={isMobileMenuOpen}
-        onClose={closeMobileMenu}
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
         navItems={navItems}
         currentPath={location.pathname}
       />
+    </header>
+  );
+});
 
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 transition-colors duration-300 mt-16">
-        <Suspense fallback={<LoadingSpinner />}>
+// Footer Component
+const Footer = memo(function Footer() {
+  return (
+    <footer className="mt-auto border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 transition-colors">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-sky-500 rounded flex items-center justify-center">
+              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            <span className="text-sm text-slate-600 dark:text-slate-400">
+              Express Entry Tracker
+            </span>
+          </div>
+
+          <p className="text-sm text-slate-500 dark:text-slate-500">
+            © {new Date().getFullYear()} All rights reserved. Not affiliated with IRCC.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+});
+
+// Main App Layout
+function AppLayout() {
+  return (
+    <div className="min-h-screen flex flex-col bg-white dark:bg-slate-950 transition-colors">
+      <Header />
+
+      <main className="flex-grow">
+        <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/history" element={<History />} />
@@ -221,15 +217,17 @@ const Navigation = memo(function Navigation() {
             <Route path="/calculator" element={<CRSCalculator />} />
           </Routes>
         </Suspense>
-      </div>
+      </main>
+
+      <Footer />
     </div>
   );
-});
+}
 
 export default function App() {
   return (
     <Router>
-      <Navigation />
+      <AppLayout />
       <ScrollToTop />
     </Router>
   );

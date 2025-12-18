@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { FaHeart } from "react-icons/fa";
 import FormField from "./FormField";
 import { YES_NO_OPTIONS, FRENCH_SKILLS_OPTIONS, CANADIAN_EDUCATION_OPTIONS } from "../../Utils/crsConstants";
 
@@ -8,13 +7,12 @@ const AdditionalFactorsSection = memo(function AdditionalFactorsSection({
   handleInputChange,
 }) {
   return (
-    <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-2xl">
-      <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-        <FaHeart className="text-red-400" />
+    <div>
+      <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
         Additional Factors
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
           label="Provincial Nomination"
           type="select"
@@ -22,7 +20,7 @@ const AdditionalFactorsSection = memo(function AdditionalFactorsSection({
           onChange={(e) => handleInputChange("provincialNomination", e.target.value)}
           options={YES_NO_OPTIONS}
           placeholder="Do you have a PNP?"
-          tooltip="Provincial Nominee Program certificate"
+          tooltip="PNP certificate"
         />
 
         <FormField
@@ -56,4 +54,4 @@ const AdditionalFactorsSection = memo(function AdditionalFactorsSection({
   );
 });
 
-export default AdditionalFactorsSection; 
+export default AdditionalFactorsSection;

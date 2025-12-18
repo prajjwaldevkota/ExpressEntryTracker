@@ -1,402 +1,205 @@
+import { useState, useEffect, useMemo, memo } from "react";
+import { useTranslation } from "react-i18next";
 
-import { useState, useEffect, useCallback, useMemo, memo } from "react"
-import { motion } from "framer-motion"
-import { useTranslation } from "react-i18next"
-import { FaUsers, FaChartBar, FaCalendarAlt, FaTrophy, FaFire, FaArrowUp } from "react-icons/fa"
+// Range Card
+const RangeCard = memo(function RangeCard({ range, value, total, maxValue }) {
+  const percentage = ((value / total) * 100).toFixed(1);
+  const barWidth = (value / maxValue) * 100;
 
-// Modern LoadingSpinner component
-const LoadingSpinner = memo(function LoadingSpinner() {
+  const getColor = () => {
+    const score = parseInt(range.split("-")[0]);
+    if (score >= 500) return { bg: "bg-emerald-500", light: "bg-emerald-50 dark:bg-emerald-900/30", text: "text-emerald-700 dark:text-emerald-400" };
+    if (score >= 450) return { bg: "bg-sky-500", light: "bg-sky-50 dark:bg-sky-900/30", text: "text-sky-700 dark:text-sky-400" };
+    if (score >= 400) return { bg: "bg-amber-500", light: "bg-amber-50 dark:bg-amber-900/30", text: "text-amber-700 dark:text-amber-400" };
+    if (score >= 300) return { bg: "bg-orange-500", light: "bg-orange-50 dark:bg-orange-900/30", text: "text-orange-700 dark:text-orange-400" };
+    return { bg: "bg-slate-400", light: "bg-slate-50 dark:bg-slate-700", text: "text-slate-600 dark:text-slate-400" };
+  };
+
+  const color = getColor();
+
   return (
-    <div className="flex flex-col items-center justify-center py-20">
-      <div className="relative">
-        <div className="w-20 h-20 border-8 border-slate-700 rounded-full animate-pulse"></div>
-        <div className="w-20 h-20 border-8 border-transparent border-t-emerald-500 rounded-full animate-spin absolute inset-0"></div>
-        <div className="w-16 h-16 border-4 border-transparent border-t-blue-500 rounded-full animate-spin animate-reverse absolute inset-2"></div>
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 hover:border-slate-300 dark:hover:border-slate-600 transition-colors">
+      <div className="flex items-center justify-between mb-3">
+        <span className={`px-2 py-1 text-xs font-semibold rounded ${color.light} ${color.text}`}>
+          {range}
+        </span>
+        <span className="text-sm text-slate-500 dark:text-slate-400">{percentage}%</span>
       </div>
-      <div className="mt-8 text-center">
-        <div className="flex items-center justify-center space-x-2 mb-2">
-          <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce"></div>
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
-          <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-        </div>
-        <p className="text-slate-300 text-lg font-medium">Loading pool data...</p>
+
+      <p className="text-2xl font-semibold text-slate-900 dark:text-white mb-3">
+        {value.toLocaleString()}
+      </p>
+
+      <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+        <div
+          className={`h-full ${color.bg} rounded-full transition-all duration-500`}
+          style={{ width: `${barWidth}%` }}
+        />
       </div>
     </div>
-  )
-})
+  );
+});
 
-// Modern StatCard component
-const StatCard = memo(function StatCard({ icon: Icon, title, value, gradient, isHighlight }) {
+// Stat Card
+const StatCard = memo(function StatCard({ label, value, icon }) {
   return (
-    <motion.div
-      whileHover={{ y: -8, scale: 1.02 }}
-      className={`relative group ${isHighlight ? "col-span-full md:col-span-1" : ""}`}
-    >
-      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-      <div className="relative bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 shadow-xl overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-500/10 to-blue-500/10 rounded-full -translate-y-16 translate-x-16"></div>
-
-        <div className="relative z-10">
-          <div className="flex items-start justify-between mb-6">
-            <div
-              className={`p-4 bg-gradient-to-br ${gradient} rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300`}
-            >
-              {Icon && <Icon className="text-white text-2xl" />}
-            </div>
-            {isHighlight && (
-              <div className="flex items-center space-x-1 bg-emerald-500/20 px-3 py-1 rounded-full">
-                <FaFire className="text-emerald-400 text-sm" />
-                <span className="text-emerald-400 text-xs font-bold">TOTAL</span>
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <p className="text-slate-400 text-sm font-medium uppercase tracking-wider">{title}</p>
-            <p className="text-white text-3xl font-black">{value}</p>
-          </div>
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 transition-colors">
+      <div className="flex items-center gap-3 mb-2">
+        <div className="w-8 h-8 bg-sky-50 dark:bg-sky-900/30 rounded-lg flex items-center justify-center">
+          {icon}
         </div>
+        <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">{label}</p>
       </div>
-    </motion.div>
-  )
-})
+      <p className="text-2xl font-semibold text-slate-900 dark:text-white">{value}</p>
+    </div>
+  );
+});
 
-// Modern PoolRangeCard component
-const PoolRangeCard = memo(function PoolRangeCard({ range, value, totalCandidates, maxValue, index }) {
-  const getScoreData = useCallback((range) => {
-    const score = Number.parseInt(range.split("-")[0])
-    if (score >= 500)
-      return {
-        color: "from-emerald-400 to-emerald-500",
-        bg: "bg-emerald-500/10",
-        text: "text-emerald-400",
-        icon: FaTrophy,
-        label: "Elite",
-      }
-    if (score >= 450)
-      return {
-        color: "from-blue-400 to-blue-500",
-        bg: "bg-blue-500/10",
-        text: "text-blue-400",
-        icon: FaFire,
-        label: "High",
-      }
-    if (score >= 400)
-      return {
-        color: "from-amber-400 to-amber-500",
-        bg: "bg-amber-500/10",
-        text: "text-amber-400",
-        icon: FaUsers,
-        label: "Good",
-      }
-    return {
-      color: "from-purple-400 to-purple-500",
-      bg: "bg-purple-500/10",
-      text: "text-purple-400",
-      icon: FaChartBar,
-      label: "Entry",
-    }
-  }, [])
-
-  const scoreData = getScoreData(range)
-  const percentage = totalCandidates > 0 ? (value / totalCandidates) * 100 : 0
-  const barWidth = maxValue > 0 ? (value / maxValue) * 100 : 0
-
+// Loading Skeleton
+const LoadingSkeleton = memo(function LoadingSkeleton() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      whileHover={{ y: -4, scale: 1.02 }}
-      className="group bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300"
-    >
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className={`w-10 h-10 bg-gradient-to-br ${scoreData.color} rounded-xl flex items-center justify-center shadow-lg`}>
-            <scoreData.icon className="text-white text-lg" />
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {[...Array(8)].map((_, i) => (
+        <div key={i} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 animate-pulse">
+          <div className="flex justify-between mb-3">
+            <div className="h-6 bg-slate-100 dark:bg-slate-700 rounded w-20" />
+            <div className="h-4 bg-slate-100 dark:bg-slate-700 rounded w-10" />
           </div>
-          <div>
-            <h3 className="text-lg font-semibold text-white">{range}</h3>
-            <p className={`text-sm font-medium ${scoreData.text}`}>{scoreData.label}</p>
-          </div>
+          <div className="h-8 bg-slate-100 dark:bg-slate-700 rounded w-24 mb-3" />
+          <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded" />
         </div>
-        <div className="text-right">
-          <p className="text-2xl font-bold text-white">{value.toLocaleString()}</p>
-          <p className="text-sm text-slate-400">{percentage.toFixed(1)}%</p>
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        <div className="w-full bg-slate-700/50 rounded-full h-3 overflow-hidden">
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${barWidth}%` }}
-            transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
-            className={`h-full bg-gradient-to-r ${scoreData.color} rounded-full shadow-lg`}
-          />
-        </div>
-        
-        <div className="flex justify-between text-sm text-slate-400">
-          <span>0</span>
-          <span>{maxValue.toLocaleString()}</span>
-        </div>
-      </div>
-    </motion.div>
-  )
-})
-
-// Modern PoolInsights component
-const PoolInsights = memo(function PoolInsights({ poolData }) {
-  const insights = useMemo(() => {
-    if (!poolData || !poolData.length) return []
-    
-    const totalCandidates = poolData.reduce((sum, range) => sum + range.value, 0)
-    const highScoreCandidates = poolData.filter(range => {
-      const score = Number.parseInt(range.range.split("-")[0])
-      return score >= 450
-    }).reduce((sum, range) => sum + range.value, 0)
-    
-    const avgScore = poolData.reduce((sum, range) => {
-      const score = Number.parseInt(range.range.split("-")[0])
-      return sum + (score * range.value)
-    }, 0) / totalCandidates
-    
-    return [
-      {
-        title: "High Score Candidates",
-        value: `${((highScoreCandidates / totalCandidates) * 100).toFixed(1)}%`,
-        description: "Candidates with CRS 450+",
-        icon: FaTrophy,
-        color: "from-emerald-500 to-emerald-600"
-      },
-      {
-        title: "Average CRS",
-        value: Math.round(avgScore),
-        description: "Weighted average score",
-        icon: FaArrowUp,
-        color: "from-blue-500 to-blue-600"
-      },
-      {
-        title: "Competition Level",
-        value: totalCandidates > 100000 ? "Very High" : totalCandidates > 50000 ? "High" : "Moderate",
-        description: "Based on pool size",
-        icon: FaUsers,
-        color: "from-amber-500 to-amber-600"
-      }
-    ]
-  }, [poolData])
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.4 }}
-      className="mb-8"
-    >
-      <h2 className="text-2xl lg:text-3xl font-bold text-white mb-6 text-center">Pool Insights</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {insights.map((insight, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 + index * 0.1 }}
-            whileHover={{ scale: 1.02, y: -4 }}
-            className="bg-slate-800/30 backdrop-blur-sm border border-slate-700/30 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300"
-          >
-            <div className="flex items-center gap-4 mb-4">
-              <div className={`w-12 h-12 bg-gradient-to-br ${insight.color} rounded-xl flex items-center justify-center shadow-lg`}>
-                <insight.icon className="text-white text-lg" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-white">{insight.title}</h3>
-                <p className="text-2xl font-bold text-white">{insight.value}</p>
-              </div>
-            </div>
-            <p className="text-slate-300 text-sm">{insight.description}</p>
-          </motion.div>
-        ))}
-      </div>
-    </motion.div>
-  )
-})
+      ))}
+    </div>
+  );
+});
 
 export default function Pool() {
-  const { t } = useTranslation()
-  const [poolData, setPoolData] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const { t } = useTranslation();
+  const [poolData, setPoolData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch pool data
   useEffect(() => {
     const fetchPoolData = async () => {
       try {
-        setLoading(true)
-        setError(null)
-        
-        // Simulate pool data since we don't have real API endpoint
-        const mockPoolData = [
-          { range: "500-600", value: 12500, totalCandidates: 150000 },
-          { range: "450-499", value: 18750, totalCandidates: 150000 },
-          { range: "400-449", value: 37500, totalCandidates: 150000 },
-          { range: "350-399", value: 45000, totalCandidates: 150000 },
-          { range: "300-349", value: 37500, totalCandidates: 150000 },
-          { range: "250-299", value: 18750, totalCandidates: 150000 },
-          { range: "200-249", value: 18750, totalCandidates: 150000 },
-          { range: "150-199", value: 18750, totalCandidates: 150000 },
-          { range: "100-149", value: 18750, totalCandidates: 150000 },
-          { range: "50-99", value: 18750, totalCandidates: 150000 },
-          { range: "0-49", value: 18750, totalCandidates: 150000 }
-        ]
-        
-        setPoolData(mockPoolData)
+        setLoading(true);
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        const mockData = [
+          { range: "601-1200", value: 5234 },
+          { range: "501-600", value: 12453 },
+          { range: "451-500", value: 24567 },
+          { range: "401-450", value: 38234 },
+          { range: "351-400", value: 42123 },
+          { range: "301-350", value: 35678 },
+          { range: "251-300", value: 28456 },
+          { range: "201-250", value: 18234 },
+          { range: "0-200", value: 12456 },
+        ];
+
+        setPoolData(mockData);
       } catch (error) {
-        console.error("Error fetching pool data:", error)
-        setError("Failed to load pool data")
+        console.error("Error fetching pool data:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchPoolData()
-  }, [])
+    fetchPoolData();
+  }, []);
 
-  // Calculate totals
-  const totalCandidates = useMemo(() => 
-    poolData.reduce((sum, range) => sum + range.value, 0), 
-    [poolData]
-  )
-  
-  const maxValue = useMemo(() => 
-    Math.max(...poolData.map(range => range.value)), 
-    [poolData]
-  )
+  const { total, maxValue } = useMemo(() => {
+    const total = poolData.reduce((sum, item) => sum + item.value, 0);
+    const maxValue = Math.max(...poolData.map(item => item.value));
+    return { total, maxValue };
+  }, [poolData]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-        <LoadingSpinner />
-      </div>
-    )
-  }
+  const stats = useMemo(() => {
+    if (!poolData.length) return [];
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <FaChartBar className="w-8 h-8 text-red-400" />
-          </div>
-          <p className="text-slate-400 text-xl font-medium mb-2">Error loading pool data</p>
-          <p className="text-slate-500 text-base">{error}</p>
-        </div>
-      </div>
-    )
-  }
+    const above450 = poolData
+      .filter(item => parseInt(item.range.split("-")[0]) >= 450)
+      .reduce((sum, item) => sum + item.value, 0);
+
+    const highestRange = poolData.reduce((prev, curr) =>
+      curr.value > prev.value ? curr : prev
+      , poolData[0]);
+
+    return [
+      {
+        label: "Total Candidates",
+        value: total.toLocaleString(),
+        icon: <svg className="w-4 h-4 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+      },
+      {
+        label: "CRS 450+",
+        value: above450.toLocaleString(),
+        icon: <svg className="w-4 h-4 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+      },
+      {
+        label: "Most Common Range",
+        value: highestRange?.range || "—",
+        icon: <svg className="w-4 h-4 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+      },
+    ];
+  }, [poolData, total]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pb-8">
-      <div className="relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header Section */}
-          <motion.div
-            initial={{ opacity: 0, y: -40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="text-center mb-12 lg:mb-16 pt-8"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 200 }}
-              className="inline-flex items-center justify-center w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-emerald-500 via-blue-600 to-purple-600 rounded-3xl mb-6 lg:mb-8 shadow-2xl shadow-emerald-500/25 relative"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-3xl"></div>
-              <FaUsers className="w-10 h-10 lg:w-12 lg:h-12 text-white relative z-10" />
-            </motion.div>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+          {t("pool.title")}
+        </h1>
+        <p className="text-slate-600 dark:text-slate-400">
+          {t("pool.subtitle")}
+        </p>
+      </div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-4xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-white via-emerald-100 to-blue-200 bg-clip-text text-transparent mb-6 tracking-tight"
-            >
-              {t("pool.title")}
-            </motion.h1>
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        {stats.map((stat, i) => (
+          <StatCard key={i} {...stat} />
+        ))}
+      </div>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="text-lg lg:text-xl text-slate-300 font-medium max-w-4xl mx-auto leading-relaxed px-4"
-            >
-              {t("pool.subtitle")}
-            </motion.p>
+      {/* Pool Distribution */}
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">CRS Score Distribution</h2>
 
-            {/* Decorative line */}
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: "120px" }}
-              transition={{ duration: 1, delay: 0.8 }}
-              className="h-1 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full mx-auto mt-8"
-            />
-          </motion.div>
+        {loading ? (
+          <LoadingSkeleton />
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {poolData.map((item) => (
+              <RangeCard
+                key={item.range}
+                range={item.range}
+                value={item.value}
+                total={total}
+                maxValue={maxValue}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
-          {/* Key Statistics */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
-          >
-            <StatCard
-              icon={FaUsers}
-              title="Total Candidates"
-              value={totalCandidates.toLocaleString()}
-              gradient="from-emerald-500 to-emerald-600"
-              isHighlight={true}
-            />
-            <StatCard
-              icon={FaChartBar}
-              title="Score Ranges"
-              value={poolData.length}
-              gradient="from-blue-500 to-blue-600"
-            />
-            <StatCard
-              icon={FaCalendarAlt}
-              title="Last Updated"
-              value="Today"
-              gradient="from-amber-500 to-amber-600"
-            />
-          </motion.div>
-
-          {/* Pool Insights */}
-          <PoolInsights poolData={poolData} />
-
-          {/* Pool Distribution */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="mb-8"
-          >
-            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-6 text-center">CRS Score Distribution</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {poolData.map((range, index) => (
-                <PoolRangeCard
-                  key={range.range}
-                  range={range.range}
-                  value={range.value}
-                  totalCandidates={totalCandidates}
-                  maxValue={maxValue}
-                  index={index}
-                  t={t}
-                />
-              ))}
-            </div>
-          </motion.div>
+      {/* Info Box */}
+      <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-6 transition-colors">
+        <div className="flex gap-4">
+          <div className="w-10 h-10 bg-sky-100 dark:bg-sky-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg className="w-5 h-5 text-sky-600 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="font-medium text-slate-900 dark:text-white mb-1">About Pool Data</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              The Express Entry pool composition shows the distribution of candidates by their CRS score ranges.
+              This data is updated periodically by IRCC and helps you understand where you stand relative to other candidates.
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

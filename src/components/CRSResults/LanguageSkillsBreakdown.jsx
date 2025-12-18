@@ -1,77 +1,45 @@
 import { memo } from "react";
-import {
-  FaLanguage,
-  FaComments,
-  FaHeadphones,
-  FaBookOpen,
-  FaPen,
-} from "react-icons/fa";
 
 const LanguageSkillsBreakdown = memo(function LanguageSkillsBreakdown({
-  title,
-  speaking,
-  listening,
-  reading,
-  writing,
-  totalScore,
-  isSecondLanguage = false,
-  languageType = "english",
+  englishBreakdown,
+  frenchBreakdown,
 }) {
-  const maxPerSkill = isSecondLanguage ? 6 : 34;
-  const languageLabel = languageType === "french" ? "French" : "English";
+  const renderBreakdown = (breakdown, language) => {
+    if (!breakdown) return null;
+
+    return (
+      <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3">
+        <h5 className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+          {language}
+        </h5>
+        <div className="grid grid-cols-2 gap-2 text-sm">
+          <div className="flex justify-between">
+            <span className="text-slate-600 dark:text-slate-400">Speaking:</span>
+            <span className="text-slate-900 dark:text-white font-medium">{breakdown.speaking || 0}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-600 dark:text-slate-400">Listening:</span>
+            <span className="text-slate-900 dark:text-white font-medium">{breakdown.listening || 0}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-600 dark:text-slate-400">Reading:</span>
+            <span className="text-slate-900 dark:text-white font-medium">{breakdown.reading || 0}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-600 dark:text-slate-400">Writing:</span>
+            <span className="text-slate-900 dark:text-white font-medium">{breakdown.writing || 0}</span>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <div className="bg-black/20 p-4 rounded-xl border border-white/5">
-      <h5 className="text-white font-medium mb-3 flex items-center gap-2">
-        <FaLanguage className="text-blue-400" />
-        {title} ({languageLabel})
-      </h5>
-      <div className="grid grid-cols-2 gap-3 text-sm">
-        <div className="flex justify-between">
-          <span className="text-slate-400 flex items-center gap-1">
-            <FaComments className="text-green-400" />
-            Speaking:
-          </span>
-          <span className="text-white">
-            {speaking}/{maxPerSkill}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-slate-400 flex items-center gap-1">
-            <FaHeadphones className="text-blue-400" />
-            Listening:
-          </span>
-          <span className="text-white">
-            {listening}/{maxPerSkill}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-slate-400 flex items-center gap-1">
-            <FaBookOpen className="text-yellow-400" />
-            Reading:
-          </span>
-          <span className="text-white">
-            {reading}/{maxPerSkill}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-slate-400 flex items-center gap-1">
-            <FaPen className="text-purple-400" />
-            Writing:
-          </span>
-          <span className="text-white">
-            {writing}/{maxPerSkill}
-          </span>
-        </div>
-      </div>
-      <div className="border-t border-white/10 mt-3 pt-3">
-        <div className="flex justify-between font-medium">
-          <span className="text-blue-400">Total:</span>
-          <span className="text-blue-400">{totalScore}</span>
-        </div>
-      </div>
+    <div className="grid gap-3">
+      {englishBreakdown && renderBreakdown(englishBreakdown, "English")}
+      {frenchBreakdown && renderBreakdown(frenchBreakdown, "French")}
     </div>
   );
 });
 
-export default LanguageSkillsBreakdown; 
+export default LanguageSkillsBreakdown;

@@ -1,353 +1,174 @@
 import { memo } from "react";
-import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useLatestDraw } from "../Utils/useOptimizedData";
-import {
-  FaHashtag,
-  FaCalendarAlt,
-  FaChartLine,
-  FaEnvelopeOpenText,
-  FaLayerGroup,
-  FaRegCalendarAlt,
-  FaTrophy,
-  FaArrowRight,
-  FaCalculator,
-  FaHistory,
-  FaUsers,
-} from "react-icons/fa";
 
-// Modern StatCard component
-const StatCard = memo(function StatCard({ icon: Icon, label, value, iconColor, index }) {
+// Simple Stat Card
+const StatCard = memo(function StatCard({ label, value, className = "" }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.1 + index * 0.1 }}
-      whileHover={{
-        scale: 1.02,
-        y: -4,
-        transition: { duration: 0.2 },
-      }}
-      className="group relative bg-slate-800/50 backdrop-blur-xl rounded-2xl p-8 border border-slate-700/50 hover:border-slate-600/50 transition-all duration-500 overflow-hidden shadow-xl hover:shadow-2xl"
-    >
-      {/* Gradient overlay on hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-700/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-      {/* Subtle glow effect */}
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500/10 via-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-      <div className="relative z-10">
-        <div className="flex items-center gap-5 mb-6">
-          <div className={`p-4 rounded-xl bg-gradient-to-br ${getIconBackground(iconColor)} shadow-lg`}>
-            {Icon && <Icon className="w-6 h-6 text-white" />}
-          </div>
-          <span className="text-slate-300 text-base font-semibold tracking-wide uppercase">{label}</span>
-        </div>
-        <p className="text-4xl font-bold text-white mb-4 tracking-tight">{value || "—"}</p>
-        <div className="w-full h-3 bg-slate-700/50 rounded-full overflow-hidden">
-          <motion.div
-            className={`h-full bg-gradient-to-r ${getProgressGradient(iconColor)} rounded-full`}
-            initial={{ width: 0 }}
-            animate={{ width: "100%" }}
-            transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
-          />
-        </div>
-      </div>
-    </motion.div>
-  )
-})
-
-// Helper function to get icon background gradient
-function getIconBackground(iconColor) {
-  const gradients = {
-    "text-emerald-400": "from-emerald-500 to-emerald-600",
-    "text-blue-400": "from-blue-500 to-blue-600",
-    "text-amber-400": "from-amber-500 to-amber-600",
-    "text-orange-400": "from-orange-500 to-orange-600",
-    "text-purple-400": "from-purple-500 to-purple-600",
-    "text-cyan-400": "from-cyan-500 to-cyan-600",
-  };
-  return gradients[iconColor] || "from-slate-500 to-slate-600";
-}
-
-// Helper function to get progress bar gradient
-function getProgressGradient(iconColor) {
-  const gradients = {
-    "text-emerald-400": "from-emerald-400 to-emerald-500",
-    "text-blue-400": "from-blue-400 to-blue-500",
-    "text-amber-400": "from-amber-400 to-amber-500",
-    "text-orange-400": "from-orange-400 to-orange-500",
-    "text-purple-400": "from-purple-400 to-purple-500",
-    "text-cyan-400": "from-cyan-400 to-cyan-500",
-  };
-  return gradients[iconColor] || "from-slate-400 to-slate-500";
-}
-
-// Modern LoadingSpinner component
-const LoadingSpinner = memo(function LoadingSpinner({ message }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="flex flex-col items-center justify-center py-16"
-    >
-      <div className="relative">
-        {/* Outer ring */}
-        <div className="w-20 h-20 border-4 border-slate-700 rounded-full"></div>
-        {/* Spinning ring */}
-        <div className="w-20 h-20 border-4 border-transparent border-t-emerald-500 border-r-blue-500 rounded-full animate-spin absolute top-0 left-0"></div>
-        {/* Inner pulsing dot */}
-        <motion.div
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-          className="w-3 h-3 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-        />
-      </div>
-      {message && (
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="text-slate-400 text-base font-medium mt-6"
-        >
-          {message}
-        </motion.p>
-      )}
-    </motion.div>
+    <div className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 transition-colors ${className}`}>
+      <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">{label}</p>
+      <p className="text-2xl font-semibold text-slate-900 dark:text-white">{value || "—"}</p>
+    </div>
   );
 });
 
-// Feature Card component
-const FeatureCard = memo(function FeatureCard({ icon: Icon, title, description, color, index }) {
+// Feature Card
+const FeatureCard = memo(function FeatureCard({ title, description, icon }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
-      whileHover={{ scale: 1.02, y: -4 }}
-      className="group bg-slate-800/30 backdrop-blur-sm border border-slate-700/30 rounded-2xl p-8 hover:bg-slate-800/50 hover:border-slate-600/50 transition-all duration-300 shadow-lg hover:shadow-xl"
-    >
-      <div className="flex items-start gap-6">
-        <div className={`p-4 rounded-xl bg-gradient-to-br ${color} shadow-lg flex-shrink-0`}>
-          {Icon && <Icon className="w-7 h-7 text-white" />}
-        </div>
-        <div className="flex-1">
-          <h3 className="text-xl font-semibold text-white mb-3">{title}</h3>
-          <p className="text-slate-300 text-base leading-relaxed">{description}</p>
-        </div>
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm transition-all">
+      <div className="w-10 h-10 bg-sky-50 dark:bg-sky-900/30 rounded-lg flex items-center justify-center mb-4">
+        {icon}
       </div>
-    </motion.div>
-  )
-})
+      <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{title}</h3>
+      <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{description}</p>
+    </div>
+  );
+});
+
+// Loading Skeleton
+const LoadingSkeleton = memo(function LoadingSkeleton() {
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      {[...Array(6)].map((_, i) => (
+        <div key={i} className="bg-slate-100 dark:bg-slate-800 rounded-xl p-5 animate-pulse">
+          <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-16 mb-3" />
+          <div className="h-7 bg-slate-200 dark:bg-slate-700 rounded w-20" />
+        </div>
+      ))}
+    </div>
+  );
+});
 
 export default function Home() {
   const { t } = useTranslation();
-  const { data, loading } = useLatestDraw();
+  const { data, loading, error } = useLatestDraw();
   const latestDraw = data?.draw;
-  const navigate = useNavigate();
-
-  const statCards = [
-    {
-      icon: FaHashtag,
-      label: t("home.drawNumber"),
-      value: latestDraw?.drawNumber,
-      iconColor: "text-emerald-400",
-    },
-    {
-      icon: FaCalendarAlt,
-      label: t("home.date"),
-      value: latestDraw?.date,
-      iconColor: "text-blue-400",
-    },
-    {
-      icon: FaChartLine,
-      label: t("home.minimumCRS"),
-      value: latestDraw?.minimumCRS,
-      iconColor: "text-amber-400",
-    },
-    {
-      icon: FaEnvelopeOpenText,
-      label: t("home.invitations"),
-      value: latestDraw?.invitationsIssued,
-      iconColor: "text-orange-400",
-    },
-    {
-      icon: FaLayerGroup,
-      label: t("home.category"),
-      value: latestDraw?.category,
-      iconColor: "text-purple-400",
-    },
-    {
-      icon: FaRegCalendarAlt,
-      label: t("home.year"),
-      value: latestDraw?.year,
-      iconColor: "text-cyan-400",
-    },
-  ];
 
   const features = [
     {
-      icon: FaChartLine,
-      title: "Real-time Tracking",
-      description:
-        "Monitor Express Entry draws as they happen with live updates and notifications.",
-      color: "from-emerald-500 to-emerald-600",
+      title: "Draw History",
+      description: "Browse through all past Express Entry draws with detailed information.",
+      icon: <svg className="w-5 h-5 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+      link: "/history"
     },
     {
-      icon: FaCalculator,
+      title: "Trends Analysis",
+      description: "Visualize trends and patterns across different draw categories.",
+      icon: <svg className="w-5 h-5 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /></svg>,
+      link: "/trends"
+    },
+    {
+      title: "Pool Statistics",
+      description: "Understand the current Express Entry pool composition.",
+      icon: <svg className="w-5 h-5 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
+      link: "/pool"
+    },
+    {
       title: "CRS Calculator",
-      description:
-        "Calculate your Comprehensive Ranking System score with our advanced 2025 calculator.",
-      color: "from-blue-500 to-blue-600",
-    },
-    {
-      icon: FaHistory,
-      title: "Historical Data",
-      description:
-        "Access comprehensive historical data to analyze trends and patterns over time.",
-      color: "from-purple-500 to-purple-600",
-    },
-    {
-      icon: FaUsers,
-      title: "Pool Analysis",
-      description:
-        "Understand the current Express Entry pool composition and your position.",
-      color: "from-amber-500 to-amber-600",
+      description: "Calculate your Comprehensive Ranking System score accurately.",
+      icon: <svg className="w-5 h-5 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>,
+      link: "/calculator"
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden pb-8">
-      {/* Simple background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"></div>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Hero Section */}
+      <div className="text-center mb-16">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-sky-50 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 rounded-full text-sm font-medium mb-6">
+          <span className="w-2 h-2 bg-sky-500 rounded-full" />
+          Updated with latest draw data
+        </div>
 
-      <div className="relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Modern Header Section */}
-          <motion.div
-            initial={{ opacity: 0, y: -40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="text-center mb-20 lg:mb-24 pt-12 lg:pt-16"
+        <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+          {t("home.title")}
+        </h1>
+
+        <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-8">
+          {t("home.subtitle")}
+        </p>
+
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link
+            to="/calculator"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-sky-500 text-white font-medium rounded-lg hover:bg-sky-600 transition-colors"
           >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 200 }}
-              className="inline-flex items-center justify-center w-24 h-24 lg:w-28 lg:h-28 bg-gradient-to-br from-emerald-500 via-blue-600 to-purple-600 rounded-3xl mb-8 lg:mb-10 shadow-2xl shadow-emerald-500/25 relative"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-3xl"></div>
-              <FaTrophy className="w-12 h-12 lg:w-14 lg:h-14 text-white relative z-10" />
-            </motion.div>
+            Calculate CRS Score
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-black bg-gradient-to-r from-white via-emerald-100 to-blue-200 bg-clip-text text-transparent mb-8 tracking-tight"
-            >
-              {t("home.title")}
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="text-xl lg:text-2xl text-slate-300 font-medium max-w-5xl mx-auto leading-relaxed px-4 mb-8"
-            >
-              {t("home.subtitle")}
-            </motion.p>
-
-            {/* Decorative line */}
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: "160px" }}
-              transition={{ duration: 1, delay: 0.8 }}
-              className="h-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full mx-auto"
-            />
-          </motion.div>
-
-          {/* Modern Stats Grid */}
-          {loading ? (
-            <LoadingSpinner message={t("common.loading")} />
-          ) : latestDraw ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 mb-24"
-            >
-              {statCards.map((card, index) => (
-                <StatCard key={index} {...card} index={index} />
-              ))}
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-              className="text-center py-20"
-            >
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-red-500/10 rounded-2xl mb-6">
-                <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-lg font-bold">!</span>
-                </div>
-              </div>
-              <p className="text-slate-400 text-2xl font-medium">{t("common.error")}</p>
-            </motion.div>
-          )}
-
-          {/* Features Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="mb-24"
+          <Link
+            to="/history"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
           >
-            <div className="text-center mb-16">
-              <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-                Everything You Need
-              </h2>
-              <p className="text-slate-300 text-xl max-w-3xl mx-auto leading-relaxed">
-                Comprehensive tools and insights to navigate your Express Entry journey
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-              {features.map((feature, index) => (
-                <FeatureCard key={index} {...feature} index={index} />
-              ))}
-            </div>
-          </motion.div>
-
-          {/* CTA Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-            className="text-center"
-          >
-            <div className="bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border border-emerald-500/20 rounded-3xl p-10 lg:p-16">
-              <h3 className="text-3xl lg:text-4xl font-bold text-white mb-6">
-                Ready to Calculate Your CRS Score?
-              </h3>
-              <p className="text-slate-300 text-xl mb-10 max-w-3xl mx-auto leading-relaxed">
-                Use our advanced CRS calculator to see where you stand and get personalized insights
-              </p>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => navigate("/calculator")}
-                className="inline-flex items-center gap-4 px-10 py-5 bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 text-white font-bold text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 shadow-emerald-500/25"
-              >
-                Calculate CRS Score
-                <FaArrowRight className="w-6 h-6" />
-              </motion.button>
-            </div>
-          </motion.div>
+            View Draw History
+          </Link>
         </div>
       </div>
+
+      {/* Latest Draw Stats */}
+      <section className="mb-16">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Latest Draw</h2>
+          <Link
+            to="/history"
+            className="text-sm text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 font-medium"
+          >
+            View all draws →
+          </Link>
+        </div>
+
+        {loading ? (
+          <LoadingSkeleton />
+        ) : error || !latestDraw ? (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 text-center">
+            <p className="text-red-600 dark:text-red-400">Unable to load latest draw data. Please try again later.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <StatCard label="Draw Number" value={`#${latestDraw.drawNumber}`} />
+            <StatCard label="Date" value={latestDraw.date} />
+            <StatCard label="Minimum CRS" value={latestDraw.minimumCRS} />
+            <StatCard label="Invitations" value={latestDraw.invitationsIssued?.toLocaleString()} />
+            <StatCard label="Category" value={latestDraw.category} className="col-span-2 md:col-span-1 lg:col-span-2" />
+          </div>
+        )}
+      </section>
+
+      {/* Features Grid */}
+      <section>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">Tools & Features</h2>
+
+        <div className="grid md:grid-cols-2 gap-4">
+          {features.map((feature, index) => (
+            <Link key={index} to={feature.link}>
+              <FeatureCard {...feature} />
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="mt-16 bg-slate-900 dark:bg-slate-800 rounded-2xl p-8 md:p-12 text-center">
+        <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+          Ready to calculate your CRS score?
+        </h2>
+        <p className="text-slate-400 mb-8 max-w-xl mx-auto">
+          Use our comprehensive calculator to see where you stand in the Express Entry pool.
+        </p>
+        <Link
+          to="/calculator"
+          className="inline-flex items-center gap-2 px-8 py-4 bg-white text-slate-900 font-semibold rounded-lg hover:bg-slate-100 transition-colors"
+        >
+          Open Calculator
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
+      </section>
     </div>
   );
 }

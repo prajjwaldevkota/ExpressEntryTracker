@@ -1,15 +1,12 @@
-import React, { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
 
 const LanguageSwitcher = memo(function LanguageSwitcher() {
   const { i18n } = useTranslation();
 
   const toggleLanguage = useCallback(() => {
     const newLang = i18n.language === "en" ? "fr" : "en";
-    console.log(`[LanguageSwitcher] Switching language from ${i18n.language} to ${newLang}`);
     i18n.changeLanguage(newLang);
-    console.log(`[LanguageSwitcher] Language changed to: ${i18n.language}`);
   }, [i18n]);
 
   const buttonText = useMemo(
@@ -18,15 +15,13 @@ const LanguageSwitcher = memo(function LanguageSwitcher() {
   );
 
   return (
-    <motion.button
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+    <button
       onClick={toggleLanguage}
-      className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 text-white rounded-xl text-sm font-medium transition-all duration-300 shadow-lg hover:shadow-xl shadow-emerald-500/25"
+      className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
       aria-label={`Switch to ${buttonText} language`}
     >
       {buttonText}
-    </motion.button>
+    </button>
   );
 });
 

@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { FaUser } from "react-icons/fa";
 import FormField from "./FormField";
 import { EDUCATION_OPTIONS, YES_NO_OPTIONS } from "../../Utils/crsConstants";
 
@@ -8,13 +7,12 @@ const PersonalInfoSection = memo(function PersonalInfoSection({
   handleInputChange,
 }) {
   return (
-    <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 p-6 lg:p-8 rounded-2xl shadow-xl">
-      <h2 className="text-xl lg:text-2xl font-bold text-white mb-6 flex items-center gap-3">
-        <FaUser className="text-emerald-400 flex-shrink-0" />
-        <span className="leading-tight">Personal Information</span>
+    <div className="border-b border-slate-200 dark:border-slate-700 pb-6 mb-6">
+      <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+        Personal Information
       </h2>
 
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid gap-4">
         <FormField
           label="Age"
           type="number"
@@ -22,7 +20,7 @@ const PersonalInfoSection = memo(function PersonalInfoSection({
           onChange={(e) => handleInputChange("age", e.target.value)}
           placeholder="Enter your age"
           required
-          tooltip="Your age at the time of application"
+          tooltip="At time of application"
         />
 
         <FormField
@@ -42,11 +40,10 @@ const PersonalInfoSection = memo(function PersonalInfoSection({
           onChange={(e) => handleInputChange("hasSpouse", e.target.value)}
           options={YES_NO_OPTIONS}
           placeholder="Select option"
-          tooltip="Spouse/partner who will accompany you to Canada"
         />
       </div>
     </div>
   );
 });
 
-export default PersonalInfoSection; 
+export default PersonalInfoSection;

@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { FaRing } from "react-icons/fa";
 import FormField from "./FormField";
 import { EDUCATION_OPTIONS, LANGUAGE_OPTIONS, WORK_EXPERIENCE_OPTIONS } from "../../Utils/crsConstants";
 
@@ -8,13 +7,12 @@ const SpouseSection = memo(function SpouseSection({
   handleInputChange,
 }) {
   return (
-    <div className="bg-black/40 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-2xl">
-      <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-        <FaRing className="text-pink-400" />
+    <div className="border-b border-slate-200 dark:border-slate-700 pb-6 mb-6">
+      <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
         Spouse/Partner Information
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
           label="Spouse Education Level"
           type="select"
@@ -46,4 +44,4 @@ const SpouseSection = memo(function SpouseSection({
   );
 });
 
-export default SpouseSection; 
+export default SpouseSection;

@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { FaInfoCircle } from "react-icons/fa";
 
 const FormField = memo(function FormField({
   label,
@@ -13,16 +12,11 @@ const FormField = memo(function FormField({
   disabled = false,
 }) {
   return (
-    <div className="space-y-3">
-      <div className="flex items-center gap-3">
-        <label className="text-white font-medium text-base leading-tight">{label}</label>
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">{label}</label>
         {tooltip && (
-          <div className="group relative">
-            <FaInfoCircle className="text-emerald-400 cursor-help text-base flex-shrink-0" />
-            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800/95 text-white text-sm rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-20 max-w-[250px] pointer-events-none shadow-xl border border-slate-700/50">
-              {tooltip}
-            </div>
-          </div>
+          <span className="text-xs text-slate-500 dark:text-slate-400">{tooltip}</span>
         )}
       </div>
       {type === "select" ? (
@@ -31,10 +25,11 @@ const FormField = memo(function FormField({
           onChange={onChange}
           required={required}
           disabled={disabled}
-          className="w-full p-4 rounded-xl border border-slate-600/50 bg-slate-800/60 text-white text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=US-ASCII,<svg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23ffffff%22/%3E%3C/svg%3E')] bg-no-repeat bg-right-12 bg-[length:20px_20px] pr-12 shadow-lg"
+          className="w-full px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed appearance-none transition-colors"
+          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.75rem center' }}
         >
           <option value="">{placeholder}</option>
-          {options.map((option) => (
+          {options?.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
@@ -48,11 +43,11 @@ const FormField = memo(function FormField({
           placeholder={placeholder}
           required={required}
           disabled={disabled}
-          className="w-full p-4 rounded-xl border border-slate-600/50 bg-slate-800/60 text-white text-base placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+          className="w-full px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         />
       )}
     </div>
   );
 });
 
-export default FormField; 
+export default FormField;
