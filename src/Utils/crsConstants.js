@@ -3,13 +3,13 @@
 // Updated to reflect latest official CRS criteria (as of 2025)
 
 export const EDUCATION_OPTIONS = [
-  { value: "secondary", label: "Secondary school (high school) diploma" },
-  { value: "one-year", label: "One-year post-secondary program" },
-  { value: "two-year", label: "Two-year post-secondary program" },
-  { value: "bachelors", label: "Bachelor's degree or 3+ year program" },
-  { value: "two-certificates", label: "Two or more certificates (one 3+ years)" },
-  { value: "masters", label: "Master's degree or professional degree" },
-  { value: "phd", label: "Doctoral degree (Ph.D.)" },
+  { value: "secondary", label: "Secondary diploma (high school graduation)" },
+  { value: "one-year", label: "One-year degree, diploma or certificate from a university, college, trade or technical school, or other institute" },
+  { value: "two-year", label: "Two-year program at a university, college, trade or technical school, or other institute" },
+  { value: "bachelors", label: "Bachelor's degree OR a three or more year program at a university, college, trade or technical school, or other institute" },
+  { value: "two-certificates", label: "Two or more certificates, diplomas, or degrees. One must be for a program of three or more years" },
+  { value: "masters", label: "Master's degree, OR professional degree needed to practice in a licensed profession" },
+  { value: "phd", label: "Doctoral level university degree (Ph.D.)" },
 ];
 
 export const LANGUAGE_OPTIONS = [
@@ -115,8 +115,8 @@ export const FRENCH_SKILLS_OPTIONS = [
 
 export const CANADIAN_EDUCATION_OPTIONS = [
   { value: "none", label: "None" },
-  { value: "one-two", label: "1-2 year credential" },
-  { value: "three-plus", label: "3+ year credential" },
+  { value: "one-two", label: "Post-secondary education in Canada - credential of one or two years" },
+  { value: "three-plus", label: "Post-secondary education in Canada - credential three years or longer" },
 ];
 
 
@@ -157,6 +157,7 @@ export const INITIAL_FORM_DATA = {
   provincialNomination: "no",
   frenchSkills: "none",
   siblingInCanada: "no",
+  studiedInCanada: "no",
   canadianEducationCredential: "none",
 };
 
