@@ -24,26 +24,86 @@ export const LANGUAGE_OPTIONS = [
 
 
 
-// TEF Canada scoring options (simplified with speaking scores)
-export const TEF_SCORING_OPTIONS = [
-  { value: "clb-4", label: "CLB 4 (Speaking: 181-225)" },
-  { value: "clb-5", label: "CLB 5 (Speaking: 226-270)" },
-  { value: "clb-6", label: "CLB 6 (Speaking: 271-309)" },
-  { value: "clb-7", label: "CLB 7 (Speaking: 310-348)" },
-  { value: "clb-8", label: "CLB 8 (Speaking: 349-370)" },
-  { value: "clb-9", label: "CLB 9 (Speaking: 371-392)" },
-  { value: "clb-10", label: "CLB 10 (Speaking: 393-450)" },
+// TEF Canada scoring options by ability
+export const TEF_SPEAKING_OPTIONS = [
+  { value: "clb-4", label: "CLB 4 (181-225)" },
+  { value: "clb-5", label: "CLB 5 (226-270)" },
+  { value: "clb-6", label: "CLB 6 (271-309)" },
+  { value: "clb-7", label: "CLB 7 (310-348)" },
+  { value: "clb-8", label: "CLB 8 (349-370)" },
+  { value: "clb-9", label: "CLB 9 (371-392)" },
+  { value: "clb-10", label: "CLB 10 (393-450)" },
 ];
 
-// TCF Canada scoring options (simplified with speaking scores)
-export const TCF_SCORING_OPTIONS = [
-  { value: "clb-4", label: "CLB 4 (Speaking: 4-5)" },
-  { value: "clb-5", label: "CLB 5 (Speaking: 6)" },
-  { value: "clb-6", label: "CLB 6 (Speaking: 7-9)" },
-  { value: "clb-7", label: "CLB 7 (Speaking: 10-11)" },
-  { value: "clb-8", label: "CLB 8 (Speaking: 12-13)" },
-  { value: "clb-9", label: "CLB 9 (Speaking: 14-15)" },
-  { value: "clb-10", label: "CLB 10 (Speaking: 16-20)" },
+export const TEF_LISTENING_OPTIONS = [
+  { value: "clb-4", label: "CLB 4 (145-180)" },
+  { value: "clb-5", label: "CLB 5 (181-216)" },
+  { value: "clb-6", label: "CLB 6 (217-248)" },
+  { value: "clb-7", label: "CLB 7 (249-279)" },
+  { value: "clb-8", label: "CLB 8 (280-297)" },
+  { value: "clb-9", label: "CLB 9 (298-315)" },
+  { value: "clb-10", label: "CLB 10 (316-360)" },
+];
+
+export const TEF_READING_OPTIONS = [
+  { value: "clb-4", label: "CLB 4 (121-150)" },
+  { value: "clb-5", label: "CLB 5 (151-180)" },
+  { value: "clb-6", label: "CLB 6 (181-206)" },
+  { value: "clb-7", label: "CLB 7 (207-232)" },
+  { value: "clb-8", label: "CLB 8 (233-247)" },
+  { value: "clb-9", label: "CLB 9 (248-262)" },
+  { value: "clb-10", label: "CLB 10 (263-300)" },
+];
+
+export const TEF_WRITING_OPTIONS = [
+  { value: "clb-4", label: "CLB 4 (181-225)" },
+  { value: "clb-5", label: "CLB 5 (226-270)" },
+  { value: "clb-6", label: "CLB 6 (271-309)" },
+  { value: "clb-7", label: "CLB 7 (310-348)" },
+  { value: "clb-8", label: "CLB 8 (349-370)" },
+  { value: "clb-9", label: "CLB 9 (371-392)" },
+  { value: "clb-10", label: "CLB 10 (393-450)" },
+];
+
+// TCF Canada scoring options by ability
+export const TCF_SPEAKING_OPTIONS = [
+  { value: "clb-4", label: "CLB 4 (4-5)" },
+  { value: "clb-5", label: "CLB 5 (6)" },
+  { value: "clb-6", label: "CLB 6 (7-9)" },
+  { value: "clb-7", label: "CLB 7 (10-11)" },
+  { value: "clb-8", label: "CLB 8 (12-13)" },
+  { value: "clb-9", label: "CLB 9 (14-15)" },
+  { value: "clb-10", label: "CLB 10 (16-20)" },
+];
+
+export const TCF_LISTENING_OPTIONS = [
+  { value: "clb-4", label: "CLB 4 (331-368)" },
+  { value: "clb-5", label: "CLB 5 (369-397)" },
+  { value: "clb-6", label: "CLB 6 (398-457)" },
+  { value: "clb-7", label: "CLB 7 (458-502)" },
+  { value: "clb-8", label: "CLB 8 (503-522)" },
+  { value: "clb-9", label: "CLB 9 (523-548)" },
+  { value: "clb-10", label: "CLB 10 (549-699)" },
+];
+
+export const TCF_READING_OPTIONS = [
+  { value: "clb-4", label: "CLB 4 (342-374)" },
+  { value: "clb-5", label: "CLB 5 (375-405)" },
+  { value: "clb-6", label: "CLB 6 (406-452)" },
+  { value: "clb-7", label: "CLB 7 (453-498)" },
+  { value: "clb-8", label: "CLB 8 (499-523)" },
+  { value: "clb-9", label: "CLB 9 (524-548)" },
+  { value: "clb-10", label: "CLB 10 (549-699)" },
+];
+
+export const TCF_WRITING_OPTIONS = [
+  { value: "clb-4", label: "CLB 4 (4-5)" },
+  { value: "clb-5", label: "CLB 5 (6)" },
+  { value: "clb-6", label: "CLB 6 (7-9)" },
+  { value: "clb-7", label: "CLB 7 (10-11)" },
+  { value: "clb-8", label: "CLB 8 (12-13)" },
+  { value: "clb-9", label: "CLB 9 (14-15)" },
+  { value: "clb-10", label: "CLB 10 (16-20)" },
 ];
 
 export const WORK_EXPERIENCE_OPTIONS = [
@@ -119,16 +179,26 @@ export const INITIAL_FORM_DATA = {
   canadianEducationCredential: "none",
 };
 
-// Helper function to get French scoring options based on test type
-export const getFrenchScoringOptions = (testType) => {
-  switch (testType) {
-    case "tef":
-      return TEF_SCORING_OPTIONS;
-    case "tcf":
-      return TCF_SCORING_OPTIONS;
-    default:
-      return [];
+// Helper function to get French scoring options based on test type and ability
+export const getFrenchScoringOptions = (testType, ability) => {
+  if (testType === "tef") {
+    switch (ability) {
+      case "speaking": return TEF_SPEAKING_OPTIONS;
+      case "listening": return TEF_LISTENING_OPTIONS;
+      case "reading": return TEF_READING_OPTIONS;
+      case "writing": return TEF_WRITING_OPTIONS;
+      default: return TEF_SPEAKING_OPTIONS;
+    }
+  } else if (testType === "tcf") {
+    switch (ability) {
+      case "speaking": return TCF_SPEAKING_OPTIONS;
+      case "listening": return TCF_LISTENING_OPTIONS;
+      case "reading": return TCF_READING_OPTIONS;
+      case "writing": return TCF_WRITING_OPTIONS;
+      default: return TCF_SPEAKING_OPTIONS;
+    }
   }
+  return [];
 };
 
 // Helper function to get placeholder text for French fields

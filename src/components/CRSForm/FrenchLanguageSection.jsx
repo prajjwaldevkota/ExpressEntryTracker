@@ -6,7 +6,11 @@ const FrenchLanguageSection = memo(function FrenchLanguageSection({
   formData,
   handleInputChange,
 }) {
-  const frenchOptions = getFrenchScoringOptions(formData.frenchTestType);
+  // Get ability-specific options
+  const speakingOptions = getFrenchScoringOptions(formData.frenchTestType, "speaking");
+  const listeningOptions = getFrenchScoringOptions(formData.frenchTestType, "listening");
+  const readingOptions = getFrenchScoringOptions(formData.frenchTestType, "reading");
+  const writingOptions = getFrenchScoringOptions(formData.frenchTestType, "writing");
 
   return (
     <div className="border-b border-slate-200 dark:border-slate-700 pb-6 mb-6">
@@ -29,7 +33,7 @@ const FrenchLanguageSection = memo(function FrenchLanguageSection({
           type="select"
           value={formData.frenchSpeaking}
           onChange={(e) => handleInputChange("frenchSpeaking", e.target.value)}
-          options={frenchOptions}
+          options={speakingOptions}
           placeholder={getFrenchPlaceholder(formData.frenchTestType)}
           disabled={!formData.frenchTestType}
         />
@@ -39,7 +43,7 @@ const FrenchLanguageSection = memo(function FrenchLanguageSection({
           type="select"
           value={formData.frenchListening}
           onChange={(e) => handleInputChange("frenchListening", e.target.value)}
-          options={frenchOptions}
+          options={listeningOptions}
           placeholder={getFrenchPlaceholder(formData.frenchTestType)}
           disabled={!formData.frenchTestType}
         />
@@ -49,7 +53,7 @@ const FrenchLanguageSection = memo(function FrenchLanguageSection({
           type="select"
           value={formData.frenchReading}
           onChange={(e) => handleInputChange("frenchReading", e.target.value)}
-          options={frenchOptions}
+          options={readingOptions}
           placeholder={getFrenchPlaceholder(formData.frenchTestType)}
           disabled={!formData.frenchTestType}
         />
@@ -59,7 +63,7 @@ const FrenchLanguageSection = memo(function FrenchLanguageSection({
           type="select"
           value={formData.frenchWriting}
           onChange={(e) => handleInputChange("frenchWriting", e.target.value)}
-          options={frenchOptions}
+          options={writingOptions}
           placeholder={getFrenchPlaceholder(formData.frenchTestType)}
           disabled={!formData.frenchTestType}
         />
