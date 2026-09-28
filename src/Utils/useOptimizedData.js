@@ -24,6 +24,7 @@ export const useOptimizedData = (endpoint, params = {}, includeLanguage = false)
           params: requestParams,
           timeout: 10000,
         });
+       
 
         setData(response.data);
       } catch (err) {
@@ -109,4 +110,8 @@ export const useLatestDraw = () => {
 
 export const useCategories = () => {
   return useOptimizedData('/categories', {}, true);
+};
+
+export const usePools = () => {
+  return useOptimizedData("/pool",{}, false)
 };

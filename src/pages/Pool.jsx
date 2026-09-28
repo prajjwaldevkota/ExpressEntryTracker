@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, memo } from "react";
 import { useTranslation } from "react-i18next";
+import { usePools } from "../Utils/useOptimizedData";
 
 // Range Card
 const RangeCard = memo(function RangeCard({ range, value, total, maxValue }) {
@@ -73,45 +74,34 @@ const LoadingSkeleton = memo(function LoadingSkeleton() {
   );
 });
 
+const SUBTOTAL_KEYS = new Set(["dd3", "dd9", "dd18"]);
+
 export default function Pool() {
-  const { t } = useTranslation();
-  const [poolData, setPoolData] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPoolData = async () => {
-      try {
-        setLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        const mockData = [
-          { range: "601-1200", value: 5234 },
-          { range: "501-600", value: 12453 },
-          { range: "451-500", value: 24567 },
-          { range: "401-450", value: 38234 },
-          { range: "351-400", value: 42123 },
-          { range: "301-350", value: 35678 },
-          { range: "251-300", value: 28456 },
-          { range: "201-250", value: 18234 },
-          { range: "0-200", value: 12456 },
-        ];
-
-        setPoolData(mockData);
-      } catch (error) {
-        console.error("Error fetching pool data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPoolData();
-  }, []);
+   const { t } = useTranslation();
+  const { data, loading, error } = usePools();
+  
+  const poolData = useMemo(() => {
+    const ranges = data?.pool?.ranges ?? [];
+    return ranges
+      .filter(item => !SUBTOTAL_KEYS.has(item.key))
+      .map(item => ({
+        key: item.key,
+        range: item.range,
+        value: parseInt(String(item.value).replace(/,/g, ""), 10) || 0,
+      }));
+  }, [data]);
 
   const { total, maxValue } = useMemo(() => {
-    const total = poolData.reduce((sum, item) => sum + item.value, 0);
-    const maxValue = Math.max(...poolData.map(item => item.value));
-    return { total, maxValue };
-  }, [poolData]);
+    if (!poolData.length) return { total: 0, maxValue: 0 };
+    const totalRow = data?.pool?.ranges?.find(r => r.key === "dd18");
+    const total = totalRow
+      ? parseInt(String(totalRow.value).replace(/,/g, ""), 10)
+      : poolData.reduce((sum, item) => sum + item.value, 0);
+    return {
+      total,
+      maxValue: Math.max(...poolData.map(item => item.value)),
+    };
+  }, [poolData, data]);
 
   const stats = useMemo(() => {
     if (!poolData.length) return [];
@@ -123,6 +113,8 @@ export default function Pool() {
     const highestRange = poolData.reduce((prev, curr) =>
       curr.value > prev.value ? curr : prev
       , poolData[0]);
+
+
 
     return [
       {
@@ -172,7 +164,7 @@ export default function Pool() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {poolData.map((item) => (
               <RangeCard
-                key={item.range}
+                key={item.key}
                 range={item.range}
                 value={item.value}
                 total={total}
