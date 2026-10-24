@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useMemo, memo } from "react";
-import axios from "axios";
+import { useOptimizedData } from "../Utils/useOptimizedData";
+import { PageHeading, DataState } from "../components/DashboardUI";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -12,7 +13,6 @@ import {
   Legend,
   Filler,
 } from "chart.js";
-import { BASE_URL } from "../Utils/utils";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../context/ThemeContext";
 
@@ -21,8 +21,8 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 // Chart colors
 const chartColors = [
-  { line: "#0ea5e9", fill: "rgba(14, 165, 233, 0.1)" },
-  { line: "#22c55e", fill: "rgba(34, 197, 94, 0.1)" },
+  { line: "#32845f", fill: "rgba(50, 132, 95, 0.08)" },
+  { line: "#7899bc", fill: "rgba(120, 153, 188, 0.07)" },
   { line: "#f59e0b", fill: "rgba(245, 158, 11, 0.1)" },
   { line: "#a855f7", fill: "rgba(168, 85, 247, 0.1)" },
   { line: "#ef4444", fill: "rgba(239, 68, 68, 0.1)" },
@@ -41,7 +41,7 @@ const StatCard = memo(function StatCard({ label, value, description }) {
 
 // Category Checkbox
 const CategoryCheckbox = memo(function CategoryCheckbox({ category, isSelected, colorIndex, onChange }) {
-  const color = chartColors[colorIndex % chartColors.length];
+  const color = chartColors[Math.max(0, colorIndex) % chartColors.length];
 
   return (
     <label className="inline-flex items-center gap-2 cursor-pointer">
@@ -94,39 +94,11 @@ export default function Trends() {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
 
-  const [draws, setDraws] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data, loading, error, refetch } = useOptimizedData('/draws', { limit: 100, sort: 'desc' });
+  const draws = useMemo(() => (data?.draws || []).filter(draw => draw.date && draw.category && draw.invitationsIssued != null), [data]);
+  const categories = useMemo(() => [...new Set(draws.map(draw => draw.category))], [draws]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [categories, setCategories] = useState([]);
-
-  // Fetch data
-  useEffect(() => {
-    const fetchDraws = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`${BASE_URL}/draws`, {
-          params: { limit: 100, sort: 'desc' }
-        });
-        const drawsData = response.data.draws || [];
-
-        const validDraws = drawsData.filter(draw =>
-          draw.date && draw.minimumCRS && draw.category && draw.invitationsIssued
-        );
-
-        setDraws(validDraws);
-
-        const uniqueCategories = [...new Set(validDraws.map(draw => draw.category))];
-        setCategories(uniqueCategories);
-        setSelectedCategories(uniqueCategories.slice(0, 3));
-      } catch (error) {
-        console.error("Error fetching draws:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDraws();
-  }, []);
+  useEffect(() => { setSelectedCategories(categories.slice(0, 3)); }, [categories]);
 
   // Toggle category
   const toggleCategory = useCallback((category) => {
@@ -244,7 +216,7 @@ export default function Trends() {
     const totalInvitations = recentDraws.reduce((sum, d) => sum + (d.invitationsIssued || 0), 0);
 
     return [
-      { label: "Total Draws", value: draws.length, description: "All time" },
+      { label: "Total Draws", value: draws.length, description: "Most recent 100 rounds at most" },
       { label: "Avg. Invitations", value: Math.round(avgInvitations).toLocaleString(), description: "Last 10 draws" },
       { label: "Total Invitations", value: totalInvitations.toLocaleString(), description: "Last 10 draws" },
     ];
@@ -253,6 +225,7 @@ export default function Trends() {
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <PageHeading eyebrow={t("dashboard.workspace")} title={t("trends.title")} description={t("trends.subtitle")} />
         <LoadingState />
       </div>
     );
@@ -260,15 +233,8 @@ export default function Trends() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-          {t("trends.title")}
-        </h1>
-        <p className="text-slate-600 dark:text-slate-400">
-          {t("trends.subtitle")}
-        </p>
-      </div>
+      <PageHeading eyebrow={t('dashboard.workspace')} title={t('trends.title')} description={t('trends.subtitle')} />
+      {error && <div className="panel"><DataState error retry={refetch} /></div>}
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -278,7 +244,7 @@ export default function Trends() {
       </div>
 
       {/* Chart Section */}
-      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden transition-colors">
+      <div className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden transition-colors ${error ? "hidden" : ""}`}>
         {/* Category Filters */}
         <div className="p-4 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between mb-3">
@@ -288,7 +254,7 @@ export default function Trends() {
             </span>
           </div>
           <div className="flex flex-wrap gap-4">
-            {categories.map((cat, index) => (
+            {categories.map((cat) => (
               <CategoryCheckbox
                 key={cat}
                 category={cat}

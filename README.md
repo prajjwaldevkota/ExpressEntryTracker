@@ -1,43 +1,51 @@
 # Express Entry Tracker
 
-Express Entry Tracker is a modern, responsive web application that displays historical data for Canada’s Express Entry draws. This frontend project uses an external API maintained by [sagunji](https://github.com/sagunji) to provide the latest Express Entry draw information, a complete draw history with filtering and sorting options, and trend visualizations.
+A responsive React dashboard for Canadian Express Entry draw results, history, invitation trends, candidate-pool distribution, occupation search and CRS score estimates.
 
-## Features
+## Development
 
-- **Latest Express Entry Draw:**  
-  View details such as draw number, date, minimum CRS, invitations issued, category, and year.
+```sh
+npm ci
+npm run dev
+npm test
+npm run lint
+npm run build
+```
 
-- **Draw History:**  
-  Filter draws by year or category. Sort draw records by date (using an icon toggle for ascending/descending order) with a polished glassmorphic design.
+Use Node 22 or later. `npm run dev` includes the API proxy. A plain static preview does not provide the production serverless function; use the development server or a Netlify deployment when testing live API requests.
 
-- **Trends Visualization:**  
-  Compare trends, such as the total number of invitations issued over time, with interactive charts and advanced filtering by category.
+## Interface
 
-- **Modern & Responsive Design:**  
-  A dark, glassy interface built with Tailwind CSS and enhanced with smooth animations via Framer Motion.
+The dashboard places the latest round, recent draw statistics and history together. It includes a responsive sidebar/mobile dialog, keyboard navigation, light/dark themes, English/French dashboard copy, loading placeholders and retry states. Calculator input remains in the current tab and is not sent to the API.
 
-- **Client-side Routing:**  
-  Navigate seamlessly between Home, History, and Trends pages using React Router.
+## API requests and User-Agent
 
-- **Development Proxy:**  
-  During development, Vite’s proxy configuration forwards API requests to avoid CORS issues without the need to maintain your own backend.
+The browser calls same-origin `/api` endpoints. Netlify forwards them through `netlify/functions/api.mjs`; Vite uses the same upstream hosts and User-Agent during development. This avoids relying on cross-origin browser requests or browser support for overriding the User-Agent header.
 
-## API Source
+The server User-Agent is declared in `shared/api-config.js`:
 
-This project consumes the Express Entry Draws API developed by [sagunji](https://github.com/sagunji). The API provides endpoints to retrieve:
-- All Express Entry draws
-- Draw categories
-- The latest Express Entry draw
+```text
+ExpressEntryTracker/2.0 (+https://expressentrytracker.netlify.app)
+```
 
-For details on how the API works and for further documentation, visit [sagunji's GitHub repository](https://github.com/sagunji).
+The production function accepts GET requests to `/draws`, `/draws/latest`, `/categories`, `/pool`, and `/nocs`. It restricts upstream hosts and forwarded query parameters, times out failed upstream calls, preserves rate-limit responses, and briefly caches successful JSON responses. No API keys are required by the existing data sources.
 
-## Tech Stack
+The draw data service is maintained by [sagunji](https://github.com/sagunji). This site is independent of IRCC.
 
-- **React:** User interface development.
-- **Vite:** Fast bundler and development server.
-- **Tailwind CSS:** Styling and layout with a modern, glassy aesthetic.
-- **React Router Dom:** Client-side routing.
-- **Axios:** HTTP client for API requests.
-- **Framer Motion:** Animations and transitions.
-- **React Icons:** Icon library for modern UI elements.
+For terminal connectivity diagnostics:
 
+```sh
+npm run check:network
+```
+
+A DNS failure occurs before HTTP headers are sent; changing a User-Agent cannot fix DNS or session network restrictions.
+
+## CRS rules
+
+The calculator distinguishes rules through November 2, 2026 from the announced November 3, 2026 labour market integration rules. Users can preview either, and the default changes on the effective Toronto date. See [scoring sources and regression coverage](CRS_CALCULATOR_VERIFICATION.md).
+
+## Deployment
+
+Netlify runs `npm run build`, publishes `dist`, and deploys the API function from `netlify/functions`. The `/api/*` rewrite must remain ahead of the SPA fallback. There is no additional database or account setup.
+
+See [verification results and environment limits](docs/verification.md).

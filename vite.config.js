@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { visualizer } from 'rollup-plugin-visualizer'
 import tailwindcss from "tailwindcss";
+import { API_USER_AGENT, DRAW_API_ORIGIN, NOC_API_ORIGIN } from "./shared/api-config.js";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,7 +10,7 @@ export default defineConfig({
     react(),
     visualizer({
       filename: 'dist/stats.html',
-      open: true,
+      open: false,
       gzipSize: true,
       brotliSize: true,
     }),
@@ -22,10 +23,11 @@ export default defineConfig({
   },
   server: {
     proxy: {
+      "/api/nocs": { target: NOC_API_ORIGIN, changeOrigin: true, headers: { "User-Agent": API_USER_AGENT } },
       "/api": {
-        target: "https://can-ee-draws.onrender.com",
+        target: DRAW_API_ORIGIN,
         changeOrigin: true,
-        secure: false,
+        headers: { "User-Agent": API_USER_AGENT },
       },
     },
   },

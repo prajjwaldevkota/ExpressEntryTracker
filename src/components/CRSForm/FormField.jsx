@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useId } from "react";
 
 const FormField = memo(function FormField({
   label,
@@ -11,16 +11,18 @@ const FormField = memo(function FormField({
   tooltip,
   disabled = false,
 }) {
+  const id = useId();
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">{label}</label>
+        <label htmlFor={id} className="text-sm font-medium text-slate-700 dark:text-slate-300">{label}</label>
         {tooltip && (
           <span className="text-xs text-slate-500 dark:text-slate-400">{tooltip}</span>
         )}
       </div>
       {type === "select" ? (
         <select
+          id={id}
           value={value}
           onChange={onChange}
           required={required}
@@ -37,6 +39,7 @@ const FormField = memo(function FormField({
         </select>
       ) : (
         <input
+          id={id}
           type={type}
           value={value}
           onChange={onChange}

@@ -1,9 +1,9 @@
 import { useState, useCallback, useMemo } from "react";
-import { calculateCRSScore } from "./crsCalculator";
+import { calculateCRSScore, getDefaultRules } from "./crsCalculator";
 import { INITIAL_FORM_DATA } from "./crsConstants";
 
 export const useCRSCalculator = () => {
-  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
+  const [formData, setFormData] = useState(() => ({ ...INITIAL_FORM_DATA, rulesVersion: getDefaultRules() }));
 
   const handleInputChange = useCallback((field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -17,7 +17,7 @@ export const useCRSCalculator = () => {
   const hasSpouse = formData.hasSpouse === "yes";
 
   const resetForm = useCallback(() => {
-    setFormData(INITIAL_FORM_DATA);
+    setFormData({ ...INITIAL_FORM_DATA, rulesVersion: getDefaultRules() });
   }, []);
 
   return {

@@ -34,7 +34,7 @@ const PersonalInfoSection = memo(function PersonalInfoSection({
         />
 
         <FormField
-          label="Do you have a spouse/partner?"
+          label="Accompanying spouse/partner who is not a Canadian citizen or PR?"
           type="select"
           value={formData.hasSpouse}
           onChange={(e) => handleInputChange("hasSpouse", e.target.value)}

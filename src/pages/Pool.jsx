@@ -1,11 +1,12 @@
-import { useState, useEffect, useMemo, memo } from "react";
+import { useMemo, memo } from "react";
 import { useTranslation } from "react-i18next";
+import { PageHeading, DataState } from "../components/DashboardUI";
 import { usePools } from "../Utils/useOptimizedData";
 
 // Range Card
 const RangeCard = memo(function RangeCard({ range, value, total, maxValue }) {
-  const percentage = ((value / total) * 100).toFixed(1);
-  const barWidth = (value / maxValue) * 100;
+  const percentage = (total ? (value / total) * 100 : 0).toFixed(1);
+  const barWidth = maxValue ? (value / maxValue) * 100 : 0;
 
   const getColor = () => {
     const score = parseInt(range.split("-")[0]);
@@ -78,7 +79,7 @@ const SUBTOTAL_KEYS = new Set(["dd3", "dd9", "dd18"]);
 
 export default function Pool() {
    const { t } = useTranslation();
-  const { data, loading, error } = usePools();
+  const { data, loading, error, refetch } = usePools();
   
   const poolData = useMemo(() => {
     const ranges = data?.pool?.ranges ?? [];
@@ -123,7 +124,7 @@ export default function Pool() {
         icon: <svg className="w-4 h-4 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
       },
       {
-        label: "CRS 450+",
+        label: "CRS 451+",
         value: above450.toLocaleString(),
         icon: <svg className="w-4 h-4 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
       },
@@ -137,15 +138,7 @@ export default function Pool() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-          {t("pool.title")}
-        </h1>
-        <p className="text-slate-600 dark:text-slate-400">
-          {t("pool.subtitle")}
-        </p>
-      </div>
+      <PageHeading eyebrow={t('dashboard.workspace')} title={t('pool.title')} description={t('pool.subtitle')} />
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -160,7 +153,7 @@ export default function Pool() {
 
         {loading ? (
           <LoadingSkeleton />
-        ) : (
+        ) : error ? <div className="panel"><DataState error retry={refetch} /></div> : !poolData.length ? <div className="panel"><DataState /></div> : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {poolData.map((item) => (
               <RangeCard

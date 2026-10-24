@@ -1,82 +1,20 @@
-import { useCRSCalculator } from "../Utils/useCRSCalculator";
-import CalculatorHeader from "../components/CRSHeader/CalculatorHeader";
-import CalculatorForm from "../components/CRSForm/CalculatorForm";
-import CalculatorResults from "../components/CRSResults/CalculatorResults";
+import { RotateCcw, ExternalLink, Info } from 'lucide-react';
+import { useCRSCalculator } from '../Utils/useCRSCalculator';
+import { CRS_SOURCE, CRS_CHANGES_SOURCE } from '../Utils/crsCalculator';
+import CalculatorHeader from '../components/CRSHeader/CalculatorHeader';
+import CalculatorForm from '../components/CRSForm/CalculatorForm';
+import CalculatorResults from '../components/CRSResults/CalculatorResults';
+import FormField from '../components/CRSForm/FormField';
 
+const bands = [{ value: 'none', label: 'Not eligible / none' }, { value: 'level1', label: 'Level 1 — median wage at least 1.3× the national median' }, { value: 'level2', label: 'Level 2 — median wage at least 1.5× the national median' }, { value: 'level3', label: 'Level 3 — median wage at least 2× the national median' }];
 export default function CRSCalculator() {
-  const { formData, handleInputChange, calculatedScore, hasSpouse } = useCRSCalculator();
-
-  return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Header */}
-      <CalculatorHeader />
-
-      {/* Main Content */}
-      <div className="grid lg:grid-cols-5 gap-8">
-        {/* Form Section - Takes 3 columns */}
-        <div className="lg:col-span-3">
-          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 transition-colors">
-            <CalculatorForm
-              formData={formData}
-              handleInputChange={handleInputChange}
-              hasSpouse={hasSpouse}
-            />
-          </div>
-        </div>
-
-        {/* Results Section - Takes 2 columns */}
-        <div className="lg:col-span-2">
-          <div className="lg:sticky lg:top-24 space-y-6">
-            {/* Score Card */}
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 transition-colors">
-              <CalculatorResults
-                calculatedScore={calculatedScore}
-                hasSpouse={hasSpouse}
-              />
-            </div>
-
-            {/* Tips */}
-            <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl p-5 transition-colors">
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">Tips to Improve Your Score</h3>
-              <ul className="space-y-3">
-                <li className="flex gap-3 text-sm">
-                  <svg className="w-5 h-5 text-sky-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
-                  <span className="text-slate-600 dark:text-slate-400">Higher education levels and Canadian credentials boost your score</span>
-                </li>
-                <li className="flex gap-3 text-sm">
-                  <svg className="w-5 h-5 text-sky-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  <span className="text-slate-600 dark:text-slate-400">Canadian work experience adds significant points</span>
-                </li>
-                <li className="flex gap-3 text-sm">
-                  <svg className="w-5 h-5 text-sky-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
-                  </svg>
-                  <span className="text-slate-600 dark:text-slate-400">Strong language test scores can add substantial points</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Info Box */}
-            <div className="bg-sky-50 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-800 rounded-xl p-5 transition-colors">
-              <div className="flex gap-3">
-                <svg className="w-5 h-5 text-sky-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div>
-                  <h4 className="text-sm font-medium text-sky-900 dark:text-sky-300">About CRS Score</h4>
-                  <p className="text-xs text-sky-700 dark:text-sky-400 mt-1 leading-relaxed">
-                    The Comprehensive Ranking System (CRS) is used to assess and score your profile for Express Entry. Higher scores increase your chances of receiving an ITA.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  const { formData, handleInputChange, calculatedScore, hasSpouse, resetForm } = useCRSCalculator();
+  return <div className="page-container calculator-page"><CalculatorHeader />
+    <div className="policy-panel"><Info size={20} /><div><strong>Rules verified October 24, 2026</strong><p>Job-offer points are currently excluded. IRCC’s new labour market integration rules take effect November 3, 2026. Select the upcoming rules below to preview their effect.</p><div className="policy-links"><a href={CRS_SOURCE} target="_blank" rel="noopener noreferrer">IRCC scoring criteria<ExternalLink size={12} /></a><a href={CRS_CHANGES_SOURCE} target="_blank" rel="noopener noreferrer">November 2026 changes<ExternalLink size={12} /></a></div></div></div>
+    <div className="calculator-grid"><div className="panel calculator-form-panel"><div className="calculator-form-heading"><h2>Your profile</h2><button className="text-link" onClick={resetForm}><RotateCcw size={13} />Reset</button></div><div className="grid sm:grid-cols-2 gap-4 border-b border-slate-200 dark:border-slate-700 pb-6 mb-6"><FormField label="Scoring rules" type="select" value={formData.rulesVersion} onChange={e => handleInputChange('rulesVersion', e.target.value)} options={[{ value: '2025-03', label: 'Through November 2, 2026' }, { value: '2026-11', label: 'From November 3, 2026' }]} /><FormField label="First official language" type="select" value={formData.firstOfficialLanguage} onChange={e => handleInputChange('firstOfficialLanguage', e.target.value)} options={[{ value: 'auto', label: 'Choose the higher-scoring language' }, { value: 'english', label: 'English' }, { value: 'french', label: 'French' }]} /></div>
+      <p className="form-guidance">Enter CLB levels for English and NCLC levels for French. <a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/documents/language-requirements/language-testing.html" target="_blank" rel="noopener noreferrer">Find your test-score equivalents ↗</a></p>
+      <CalculatorForm formData={formData} handleInputChange={handleInputChange} hasSpouse={hasSpouse} />
+      {formData.rulesVersion === '2026-11' && <section className="upcoming-fields"><h2>Labour market integration</h2><p>Use IRCC’s eligible occupation bands, not your personal salary. For experience points, choose the highest band in which you have at least 12 months of qualifying Canadian work experience.</p><a href={CRS_CHANGES_SOURCE} className="text-link" target="_blank" rel="noopener noreferrer">Check qualifying occupations and conditions<ExternalLink size={13} /></a><div className="space-y-4 mt-4"><FormField label="Qualifying high-wage Canadian work experience" type="select" value={formData.highWageExperience} onChange={e => handleInputChange('highWageExperience', e.target.value)} options={bands} /><FormField label="Valid job offer in an eligible high-wage occupation" type="select" value={formData.highWageJobOffer} onChange={e => handleInputChange('highWageJobOffer', e.target.value)} options={bands} /></div></section>}
+    </div><aside className="calculator-results-panel"><div className="panel calculator-score-panel"><CalculatorResults calculatedScore={calculatedScore} hasSpouse={hasSpouse} /></div><div className="calculator-privacy"><Info size={16} /><p>This is an estimate, not an eligibility decision. Your answers stay in this tab and are not sent to the data API. Confirm your result with IRCC before making an application.</p></div></aside></div>
+  </div>;
 }
